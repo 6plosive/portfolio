@@ -159,6 +159,10 @@ enableEmoji = true
     name = "linkedin"
     url = "https://www.linkedin.com/in/yip-gabriel/"
 
+[caches]
+  [caches.images]
+    dir = ':cacheDir/images'
+    
 [menu]
 
   [[menu.main]]
