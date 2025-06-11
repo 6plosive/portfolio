@@ -83,6 +83,10 @@ enableEmoji = true
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+      [markup.goldmark.renderHooks.image]
+        enableDefault = true
+      [markup.goldmark.renderHooks.link]
+        enableDefault = true
     [markup.goldmark.extensions]
       strikethrough = false
       [markup.goldmark.extensions.extras]
