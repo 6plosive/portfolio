@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Gabriel Yip</title>
-    <link>http://localhost:1313/en/tags/</link>
+    <link>//localhost:1313/en/tags/</link>
     <description>Recent content in Tags on Gabriel Yip</description>
     <generator>Hugo</generator>
     <language>en-US</language>
     <lastBuildDate>Tue, 10 Jun 2025 20:33:57 +1000</lastBuildDate>
-    <atom:link href="http://localhost:1313/en/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="//localhost:1313/en/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Untagged</title>
-      <link>http://localhost:1313/en/tags/untagged/</link>
+      <link>//localhost:1313/en/tags/untagged/</link>
       <pubDate>Tue, 10 Jun 2025 20:33:57 +1000</pubDate>
-      <guid>http://localhost:1313/en/tags/untagged/</guid>
+      <guid>//localhost:1313/en/tags/untagged/</guid>
       <description></description>
     </item>
   </channel>

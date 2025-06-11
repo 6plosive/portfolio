@@ -1,4 +1,4 @@
-baseURL = "https://6plosive.github.io/portfolio/"
+baseURL = "/"
 theme = "hermit-v2"
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = true

@@ -62,6 +62,7 @@ Nice! Upload `input.bin` and it will show the file already existed! But since `/
 
 ![Photo of passwd](/images/etc-passwd.jpeg)
 
+
 This means as long as the filepath is valid base64 string, we could access it! Nice! Let's try to retrieve `flag.txt` then!
 
 NOPE! Since `flag.txt` has a `.` in the title, it is an invalid base64 string. Not that easy huh... damn it! 
