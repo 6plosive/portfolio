@@ -11,11 +11,13 @@ tags:
 ## Note-Service
 
 ### 🫣 Observation
-We see a very simple flask website with file upload and download function. When you upload a file on the website, it will save the file and change the file name as the base64 of the content's first 50 bytes. Meaning if I uploaded a file named `abc.txt` with content ```abcdefg```, the file will be saved as ```YWJjZGVmZw==``` as the file name, with the content as ```abcdefg```.
+We see a very simple flask website with file upload and download function. When you upload a file on the website, it will save the file and change the file name as the base64 of the content's first 50 bytes. This means if you upload a file named `abc.txt` with the content `abcdefg`, the file will be saved with the name `YWJjZGVmZw==` and the content will remain `abcdefg`.
+
+
 
 Observation 1: If the file is not uploaded before, you cannot retrieve the file. Also, if the file already existed on the server, the uploaded file will not replace the original file. 
 
-But why does these matter? Let's check out a snippet of the backend for the upload file and see where the vulnerability lies,
+But why does this matter? Let's check out a snippet of the backend for the upload file and see where the vulnerability lies,
 ```python
 @app.route("/", methods=["GET", "POST"]) #11
 def index(): #12
@@ -48,9 +50,9 @@ Check out this snippet of the server.py code:
         note_title = b64encode(note_content[:50]).decode() #16
         uploaded_files.add(note_title) #17
 ```
-What we want is a string, AFTER it being base64 encoded, it becomes `/etc/passwd`. Easy enough, right? We just need to run `b64decode(b'/etc/passwd')` in python and that's it! 
+What we want is a string that, after being base64 encoded, becomes `/etc/passwd`. Easy enough, right? We just need to run `b64decode(b'/etc/passwd')` in Python and that's it! 
 
-BUT this would produce an error. Specifically `binascii.Error: Incorrect padding`. For it to a valid base64 string, its length must be an increment of 4 and every character has to be `A-Z, a-z, 0-9, + or /`. We need to somehow turn this path (`/etc/passwd`) lengthed 11 now to a length 12 path. Easy enough! We just add a `/` in front, making the path `//etc/passwd`. This would let us access the file while fitting the criteria for a vaid base64 string.
+BUT this would produce an error. Specifically `binascii.Error: Incorrect padding`. For it to a valid base64 string, its length must be a multiple of 4, and every character must be `A-Z, a-z, 0-9, + or /`. We need to somehow turn this path (`/etc/passwd`), which is 11 characters long, into a 12 character path. Easy enough! We just add a `/` in front, making the path `//etc/passwd`. This would let us access the file while fitting the criteria for a valid base64 string.
 ```python
 >>> payload = b64decode(b'//etc/passwd')
 >>> print(payload)
