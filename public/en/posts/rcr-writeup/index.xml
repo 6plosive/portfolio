@@ -51,7 +51,7 @@
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;input.bin&#34;</span>, <span style="color:#e6db74">&#34;wb&#34;</span>) <span style="color:#66d9ef">as</span> f:
 </span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>     f<span style="color:#f92672">.</span>write(payload)
 </span></span></code></pre></div><p>Nice! Upload <code>input.bin</code> and it will show the file already existed! But since <code>//etc/passwd</code> is in the <code>uploaded_files</code> array, we could access <code>//etc/passwd</code> and see the content of file!</p>
-<p><img src="/images/etc-passwd.jpeg" alt="Photo of passwd"></p>
+<p><img src="../etc-passwd.jpeg" alt="Photo of passwd"></p>
 <p>This means as long as the filepath is valid base64 string, we could access it! Nice! Let&rsquo;s try to retrieve <code>flag.txt</code> then!</p>
 <p>NOPE! Since <code>flag.txt</code> has a <code>.</code> in the title, it is an invalid base64 string. Not that easy huh&hellip; damn it!</p>
 <h3 id="solution">Solution</h3>

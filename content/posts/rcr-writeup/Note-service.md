@@ -60,7 +60,7 @@ b'\xff\xf7\xads\xfaZ\xb2\xcc\x1d'
 ```
 Nice! Upload `input.bin` and it will show the file already existed! But since `//etc/passwd` is in the `uploaded_files` array, we could access `//etc/passwd` and see the content of file! 
 
-![Photo of passwd](/images/etc-passwd.jpeg)
+![Photo of passwd](../etc-passwd.jpeg)
 
 
 This means as long as the filepath is valid base64 string, we could access it! Nice! Let's try to retrieve `flag.txt` then!
