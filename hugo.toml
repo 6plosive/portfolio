@@ -1,4 +1,4 @@
-baseURL = "/"
+baseURL = "https://6plosive.github.io/portfolio/"
 theme = "hermit-v2"
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = true
@@ -83,10 +83,6 @@ enableEmoji = true
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
-      [markup.goldmark.renderHooks.image]
-        enableDefault = true
-      [markup.goldmark.renderHooks.link]
-        enableDefault = true
     [markup.goldmark.extensions]
       strikethrough = false
       [markup.goldmark.extensions.extras]
