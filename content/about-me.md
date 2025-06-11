@@ -1,1 +1,1 @@
-I am Gabriel Yip
+I am Gabriel Yip. This website is a WIP so expect some unfinished stuff!!

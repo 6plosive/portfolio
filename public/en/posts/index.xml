@@ -1,19 +1,34 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Posts on Gabriel Yip</title>
-    <link>http://localhost:1313/en/posts/</link>
-    <description>Recent content in Posts on Gabriel Yip</description>
-    <generator>Hugo</generator>
-    <language>en-US</language>
-    <lastBuildDate>Wed, 21 May 2025 13:38:16 +1000</lastBuildDate>
-    <atom:link href="http://localhost:1313/en/posts/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>My First Post</title>
-      <link>http://localhost:1313/en/posts/my-first-post/</link>
-      <pubDate>Wed, 21 May 2025 13:38:16 +1000</pubDate>
-      <guid>http://localhost:1313/en/posts/my-first-post/</guid>
-      <description>&lt;p&gt;whats up  yppp&lt;/p&gt;</description>
-    </item>
-  </channel>
+	<channel>
+		<title>Posts on Gabriel Yip</title>
+		<link>http://localhost:1313/en/posts/</link>
+		<description>Recent content in Posts on Gabriel Yip</description>
+		<generator>Hugo -- gohugo.io</generator>
+		<language>en-US</language>
+		<lastBuildDate>Tue, 10 Jun 2025 20:33:57 +1000</lastBuildDate>
+		<atom:link href="http://localhost:1313/en/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title> 📁 Rookie Code Rumble CTF Writeup</title>
+			<link>http://localhost:1313/en/posts/rcr-writeup/</link>
+			<pubDate>Tue, 10 Jun 2025 15:47:44 +1000</pubDate>
+			
+			<guid>http://localhost:1313/en/posts/rcr-writeup/</guid>
+			<description><![CDATA[%!s(<nil>)]]></description>
+			<content type="html"><![CDATA[<p><a href="https://ctf.secso.cc/">https://ctf.secso.cc/</a></p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>My First Post</title>
+			<link>http://localhost:1313/en/posts/my-first-post/</link>
+			<pubDate>Wed, 21 May 2025 13:38:16 +1000</pubDate>
+			
+			<guid>http://localhost:1313/en/posts/my-first-post/</guid>
+			<description><![CDATA[%!s(<nil>)]]></description>
+			<content type="html"><![CDATA[<p>whats up  yppp</p>
+]]></content>
+		</item>
+		
+	</channel>
 </rss>

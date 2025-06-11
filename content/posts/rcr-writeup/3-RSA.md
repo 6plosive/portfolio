@@ -1,5 +1,5 @@
 ---
-title: "3 RSA"
+title: "3-RSA"
 date: 2025-06-10T15:47:44+10:00
 draft: false
 toc: false

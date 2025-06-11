@@ -13,21 +13,21 @@
       <link>http://localhost:1313/en/posts/rcr-writeup/note-service/</link>
       <pubDate>Tue, 10 Jun 2025 20:33:57 +1000</pubDate>
       <guid>http://localhost:1313/en/posts/rcr-writeup/note-service/</guid>
-      <description>&lt;h2 id=&#34;note-service&#34;&gt;Note-Service&lt;a href=&#34;#note-service&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;svg xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34;&#xA;      stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34;&gt;&#xA;      &lt;path d=&#34;M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3&#34;&gt;&lt;/path&gt;&#xA;      &lt;line x1=&#34;8&#34; y1=&#34;12&#34; x2=&#34;16&#34; y2=&#34;12&#34;&gt;&lt;/line&gt;&#xA;   &lt;/svg&gt;&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;h3 id=&#34;-observation&#34;&gt;🫣 Observation&lt;a href=&#34;#-observation&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;svg xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34;&#xA;      stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34;&gt;&#xA;      &lt;path d=&#34;M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3&#34;&gt;&lt;/path&gt;&#xA;      &lt;line x1=&#34;8&#34; y1=&#34;12&#34; x2=&#34;16&#34; y2=&#34;12&#34;&gt;&lt;/line&gt;&#xA;   &lt;/svg&gt;&lt;/a&gt;&lt;/h3&gt;&#xA;&lt;p&gt;We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named &lt;code&gt;abc.txt&lt;/code&gt; with content &lt;code&gt;abcdefg&lt;/code&gt;, the file will be saved as &lt;code&gt;YWJjZGVmZw==&lt;/code&gt; as the tite, with the content as &lt;code&gt;abcdefg&lt;/code&gt;.&lt;/p&gt;</description>
+      <description>&lt;h2 id=&#34;note-service&#34;&gt;Note-Service&lt;/h2&gt;&#xA;&lt;h3 id=&#34;-observation&#34;&gt;🫣 Observation&lt;/h3&gt;&#xA;&lt;p&gt;We see a very simple flask website with file upload and download function. When you upload a file on the website, it will save the file and change the file name as the base64 of the content&amp;rsquo;s first 50 bytes. Meaning if I uploaded a file named &lt;code&gt;abc.txt&lt;/code&gt; with content &lt;code&gt;abcdefg&lt;/code&gt;, the file will be saved as &lt;code&gt;YWJjZGVmZw==&lt;/code&gt; as the file name, with the content as &lt;code&gt;abcdefg&lt;/code&gt;.&lt;/p&gt;</description>
     </item>
     <item>
-      <title>3 RSA</title>
-      <link>http://localhost:1313/en/posts/rcr-writeup/3-rsa/</link>
-      <pubDate>Tue, 10 Jun 2025 15:47:44 +1000</pubDate>
-      <guid>http://localhost:1313/en/posts/rcr-writeup/3-rsa/</guid>
-      <description>&lt;h2 id=&#34;3-rsa&#34;&gt;3-RSA&lt;a href=&#34;#3-rsa&#34; class=&#34;anchor&#34; aria-hidden=&#34;true&#34;&gt;&lt;svg xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 24 24&#34; fill=&#34;none&#34; stroke=&#34;currentColor&#34; stroke-width=&#34;2&#34;&#xA;      stroke-linecap=&#34;round&#34; stroke-linejoin=&#34;round&#34;&gt;&#xA;      &lt;path d=&#34;M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3&#34;&gt;&lt;/path&gt;&#xA;      &lt;line x1=&#34;8&#34; y1=&#34;12&#34; x2=&#34;16&#34; y2=&#34;12&#34;&gt;&lt;/line&gt;&#xA;   &lt;/svg&gt;&lt;/a&gt;&lt;/h2&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;I did nothing much in this except asking AI (Gemini 2.5 Pro) about this. Surprisingly the prompt works the first time! Since the AI probably explains it better than me, here is the LLM response:&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Rookie Code Rumble CTF Writeup</title>
+      <title> 📁 Rookie Code Rumble CTF Writeup</title>
       <link>http://localhost:1313/en/posts/rcr-writeup/</link>
       <pubDate>Tue, 10 Jun 2025 15:47:44 +1000</pubDate>
       <guid>http://localhost:1313/en/posts/rcr-writeup/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://ctf.secso.cc/&#34;&gt;https://ctf.secso.cc/&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>3-RSA</title>
+      <link>http://localhost:1313/en/posts/rcr-writeup/3-rsa/</link>
+      <pubDate>Tue, 10 Jun 2025 15:47:44 +1000</pubDate>
+      <guid>http://localhost:1313/en/posts/rcr-writeup/3-rsa/</guid>
+      <description>&lt;h2 id=&#34;3-rsa&#34;&gt;3-RSA&lt;/h2&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;I did nothing much in this except asking AI (Gemini 2.5 Pro) about this. Surprisingly the prompt works the first time! Since the AI probably explains it better than me, here is the LLM response:&lt;/p&gt;&lt;/blockquote&gt;&#xA;&lt;p&gt;The vulnerability in this code lies in the predictable way the prime numbers for the RSA moduli were generated. The primes &lt;code&gt;a, b, c&lt;/code&gt; and &lt;code&gt;x, y, z&lt;/code&gt; are not random; they form &lt;strong&gt;arithmetic progressions&lt;/strong&gt;. This mathematical relationship allows an attacker to link the three public keys (&lt;code&gt;n1&lt;/code&gt;, &lt;code&gt;n2&lt;/code&gt;, &lt;code&gt;n3&lt;/code&gt;) together, ultimately revealing all the secret prime factors.&lt;/p&gt;</description>
     </item>
     <item>
       <title>My First Post</title>

@@ -11,9 +11,9 @@ tags:
 ## Note-Service
 
 ### 🫣 Observation
-We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named `abc.txt` with content ```abcdefg```, the file will be saved as ```YWJjZGVmZw==``` as the tite, with the content as ```abcdefg```.
+We see a very simple flask website with file upload and download function. When you upload a file on the website, it will save the file and change the file name as the base64 of the content's first 50 bytes. Meaning if I uploaded a file named `abc.txt` with content ```abcdefg```, the file will be saved as ```YWJjZGVmZw==``` as the file name, with the content as ```abcdefg```.
 
-Observation 1: If the file is not uploaded before, you cannot retrieve the file. Also, if the file already existed on the server, the file would not be uploaded and the original file will be retained in the server. For example, if a file named ```flag.txt``` is already on the server, retrieving ```flag.txt``` will return an error as the file was not uploaded.
+Observation 1: If the file is not uploaded before, you cannot retrieve the file. Also, if the file already existed on the server, the uploaded file will not replace the original file. 
 
 But why does these matter? Let's check out a snippet of the backend for the upload file and see where the vulnerability lies,
 ```python
@@ -34,7 +34,7 @@ def index(): #12
             flash(f"Your file has been written to! It has been saved with the title: {note_title}", "success") #25
 ```
 
-Notice Line #17? An array `uploaded_files` appends the title no matter if the file existed already on the server or not! Meaning even if a file already existed on the server before, it will not replace the file with the one you uploaded. However you can retrieve the file originally on the server.
+Notice Line #17? An array `uploaded_files` appends the file name no matter if the file existed already on the server or not! Meaning even if a file already existed on the server before, it will not replace the file with the one you uploaded. However you now can retrieve the file originally on the server.
 
 Observation 2: VERY IMPORTANT! Flask debug is on! and https://\<some.coolurl.com\>/console is out in the public!!! If you manage to cause an error (Just try to retrieve an empty file), you will get a snippet of the source code around the line the error was thrown. Most importantly, the path the backend server is in the error logs! From this, you will know the python script is located at `/a/very/strange/working/directory/server.py`! (sus!) 
 
@@ -60,7 +60,7 @@ b'\xff\xf7\xads\xfaZ\xb2\xcc\x1d'
 ```
 Nice! Upload `input.bin` and it will show the file already existed! But since `//etc/passwd` is in the `uploaded_files` array, we could access `//etc/passwd` and see the content of file! 
 
-<< PHOTO OF PASSWD >>
+![Photo of passwd](/images/etc-passwd.jpeg)
 
 This means as long as the filepath is valid base64 string, we could access it! Nice! Let's try to retrieve `flag.txt` then!
 

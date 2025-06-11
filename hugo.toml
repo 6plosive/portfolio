@@ -109,12 +109,12 @@ enableEmoji = true
   dateformNumTime = "2006-01-02 15:04 -0700"
 
   # Metadata mostly used in document's head
-  description = "Continuing Hermit's legacy to be minimal and fast theme"
+  description = "Gabriel Yip's portfolio and blog stuff."
   # images = [""]
   themeColor = "#494f5c"
   accentColor = "#018472"
 
-  #homeSubtitle = "Continuing Hermit's legacy to be minimal and fast theme"
+  #homeSubtitle = "Gabriel Yip's portfolio and blog stuff."
   footerCopyright = ' <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
   # bgImg = ""
   # gitUrl = "https://github.com/1bl4z3r/hermit-V2/tree/staging"
@@ -162,7 +162,7 @@ enableEmoji = true
 [caches]
   [caches.images]
     dir = ':cacheDir/images'
-    
+
 [menu]
 
   [[menu.main]]
